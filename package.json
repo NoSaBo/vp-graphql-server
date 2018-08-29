@@ -1,0 +1,40 @@
+{
+  "name": "vp-graphql-server",
+  "version": "1.0.0",
+  "description": "GraphQL server for vp project",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js --exec babel-node",
+    "build": "babel lib -d dist",
+    "dev:server": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/NoSaBo/vp-graphql-server.git"
+  },
+  "author": "JRey",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NoSaBo/vp-graphql-server/issues"
+  },
+  "homepage": "https://github.com/NoSaBo/vp-graphql-server#readme",
+  "dependencies": {
+    "express": "^4.16.3",
+    "express-graphql": "^0.6.12",
+    "graphql": "^0.13.2",
+    "lodash": "^4.17.10",
+    "nodemon": "^1.18.3",
+    "pg": "^7.4.3",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.38.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2017": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "faker": "^4.1.0"
+  }
+}
