@@ -111,10 +111,10 @@ const RootQuery = new GraphQLObjectType({
       employee: {
         type: new GraphQLList(Employee),
         args: {
-          id: {
-            type: GraphQLInt
-          },
           userName: {
+            type: GraphQLString
+          },
+          password: {
             type: GraphQLString
           }
         },
@@ -148,13 +148,17 @@ const Mutation = new GraphQLObjectType({
           },
           userName: {
             type: new GraphQLNonNull(GraphQLString)
+          },
+          password: {
+            type: new GraphQLNonNull(GraphQLString)
           }
         },
         resolve(root, args) {
           return Db.models.employee.create({
             firstName: args.firstName,
             lastName: args.lastName,
-            userName: args.userName.toLowerCase()
+            userName: args.userName.toLowerCase(),
+            password: args.password
           });
         }
       }

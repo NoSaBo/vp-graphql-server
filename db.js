@@ -28,6 +28,10 @@ const Employee = conn.define("employee", {
   userName: {
     type: Sequelize.STRING,
     allowNull: false
+  },
+  password: {
+    type: Sequelize.STRING,
+    allowNull: false
   }
 });
 
@@ -57,14 +61,20 @@ const ServiceShift = conn.define("serviceshift", {
 ServiceShift.belongsTo(Branch);
 Employee.hasMany(ServiceShift);
 
-// conn.sync({ force: true }).then(() => {
-//   _.times(4, () => {
-//     return Employee.create({
-//       firstName: Faker.name.firstName(),
-//       lastName: Faker.name.lastName(),
-//       userName: Faker.name.firstName()
-//     });
-//   });
-// });
+conn.sync({ force: true }).then(() => {
+  // _.times(4, () => {
+  //   return Employee.create({
+  //     firstName: Faker.name.firstName(),
+  //     lastName: Faker.name.lastName(),
+  //     userName: Faker.name.firstName()
+  //   });
+  // });
+  return Employee.create({
+    firstName: "Jesus",
+    lastName: "Rey",
+    userName: "jreyp",
+    password: "jesus"
+  });
+});
 
 export default conn;
