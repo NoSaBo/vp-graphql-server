@@ -1,3 +1,5 @@
+// @flow
+
 import express from "express";
 import expressGraphQL from "express-graphql";
 import schema from "./schema";
