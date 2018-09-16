@@ -43,10 +43,10 @@ const Employee = new GraphQLObjectType({
           return employee.userName;
         }
       },
-      serviceShifts: {
+      shifts: {
         type: new GraphQLList(ServiceShift),
         resolve(employee) {
-          return employee.getServiceShift();
+          return employee.getServiceshifts();
         }
       }
     };

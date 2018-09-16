@@ -25,6 +25,12 @@ const ServiceShift = new GraphQLObjectType({
           return serviceShift.id;
         }
       },
+      date: {
+        type: GraphQLString,
+        resolve(serviceShift) {
+          return serviceShift.date;
+        }
+      },
       begin: {
         type: GraphQLString,
         resolve(serviceShift) {
@@ -35,6 +41,12 @@ const ServiceShift = new GraphQLObjectType({
         type: GraphQLString,
         resolve(serviceShift) {
           return serviceShift.end;
+        }
+      },
+      branch: {
+        type: Branch,
+        resolve(serviceShift) {
+          return serviceShift.getBranch();
         }
       }
     };

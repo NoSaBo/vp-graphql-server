@@ -2,6 +2,10 @@ import Sequelize from "sequelize";
 import _ from "lodash";
 import Faker from "faker";
 
+import EmployeeModel from "./employee";
+import BranchModel from "./branch";
+import ServiceShiftModel from "./service-shift";
+
 const conn = new Sequelize(
   "d8lclr6faernog", // database
   "ovqboahjoerpnl", // user
@@ -16,54 +20,9 @@ const conn = new Sequelize(
   }
 );
 
-const Employee = conn.define("employee", {
-  firstName: {
-    type: Sequelize.STRING,
-    allowNull: false
-  },
-  lastName: {
-    type: Sequelize.STRING,
-    allowNull: false
-  },
-  userName: {
-    type: Sequelize.STRING,
-    allowNull: false
-  },
-  password: {
-    type: Sequelize.STRING,
-    allowNull: false
-  }
-});
-
-const Branch = conn.define("branch", {
-  branchName: {
-    type: Sequelize.STRING,
-    allowNull: false
-  },
-  address: {
-    type: Sequelize.STRING,
-    allowNull: false
-  },
-  latitude: {
-    type: Sequelize.FLOAT,
-    allowNull: false
-  },
-  longitude: {
-    type: Sequelize.FLOAT,
-    allowNull: false
-  }
-});
-
-const ServiceShift = conn.define("serviceshift", {
-  begin: {
-    type: Sequelize.STRING,
-    allowNull: false
-  },
-  end: {
-    type: Sequelize.STRING,
-    allowNull: false
-  }
-});
+const Employee = conn.define("employee", EmployeeModel);
+const Branch = conn.define("branch", BranchModel);
+const ServiceShift = conn.define("serviceshift", ServiceShiftModel);
 
 // Relationships
 Branch.hasMany(ServiceShift);
@@ -84,17 +43,37 @@ conn.sync({ force: true }).then(() => {
     userName: "jreyp",
     password: "jesus"
   });
+  Employee.create({
+    firstName: "Diego",
+    lastName: "Buendia",
+    userName: "dbuendia",
+    password: "diego"
+  });
   Branch.create({
     branchName: "Jesus's House",
-    address: "Ca Las Tordillas 173",
+    address: "Ca. Las Tordillas 173",
     latitude: -12.094413,
     longitude: -77.019715
   });
+  Branch.create({
+    branchName: "Yo Manejo S.A.C.",
+    address: "Av. Del Parque Norte 1126",
+    latitude: -12.09752,
+    longitude: -77.010324
+  });
   ServiceShift.create({
+    date: "18/09",
     begin: "11:00 am",
     end: "4:00 pm",
     branchId: "1",
     employeeId: "1"
+  });
+  ServiceShift.create({
+    date: "18/09",
+    begin: "10:00 am",
+    end: "2:00 pm",
+    branchId: "2",
+    employeeId: "2"
   });
 });
 

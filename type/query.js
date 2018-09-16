@@ -20,17 +20,14 @@ const QueryType = new GraphQLObjectType({
   fields: () => {
     return {
       employee: {
-        type: new GraphQLList(Employee),
+        type: Employee,
         args: {
           userName: {
-            type: GraphQLString
-          },
-          password: {
             type: GraphQLString
           }
         },
         resolve(root, args) {
-          return Db.models.employee.findAll({ where: args });
+          return Db.models.employee.findOne({ where: args });
         }
       },
       login: {
@@ -69,7 +66,7 @@ const QueryType = new GraphQLObjectType({
         type: Branch,
         args: {
           id: {
-            type: new GraphQLNonNull(GraphQLInt)
+            type: GraphQLInt
           }
         },
         resolve(root, args) {
