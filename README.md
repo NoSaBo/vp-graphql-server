@@ -14,5 +14,15 @@ employee(userName: "jreyp") {
 id
 firstName
 lastName
+shifts {
+id
+date
+begin
+end
+branch {
+branchName
+address
+}
+}
 }
 }
