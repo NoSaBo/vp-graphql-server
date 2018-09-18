@@ -5,7 +5,7 @@ import expressGraphQL from "express-graphql";
 import schema from "./schema";
 import cors from "cors";
 
-const APP_PORT = 4000;
+const port = process.env.PORT || 4000;
 
 const app = express();
 
@@ -20,6 +20,6 @@ app.use(
   })
 );
 
-app.listen(APP_PORT, () => {
+app.listen(port, () => {
   console.log("Server running on port: " + APP_PORT);
 });
