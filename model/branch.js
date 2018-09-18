@@ -49,6 +49,12 @@ const Branch = new GraphQLObjectType({
         resolve(branch) {
           return branch.longitude;
         }
+      },
+      shift: {
+        type: new GraphQLList(ServiceShift),
+        resolve(branch) {
+          return branch.getServiceshifts();
+        }
       }
     };
   }
