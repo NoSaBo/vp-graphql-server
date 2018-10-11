@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "GraphQL server for vp project",
   "main": "server.js",
+  "engines": {
+    "node": "8.1.0"
+  },
   "scripts": {
     "start": "nodemon server.js --exec babel-node",
     "build": "babel lib -d dist",
