@@ -8,6 +8,7 @@ import {
   GraphQLList,
   GraphQLNonNull
 } from "graphql";
+import * as bcrypt from "bcrypt";
 
 import Employee from "../model/employee";
 import Branch from "../model/branch";
@@ -37,11 +38,15 @@ const MutationType = new GraphQLObjectType({
           }
         },
         resolve(root, args) {
+          const saltRounds = 10;
+          const salt = bcrypt.genSaltSync(saltRounds);
+          const hash = bcrypt.hashSync(args.password, salt);
+
           return Db.models.employee.create({
             firstName: args.firstName,
             lastName: args.lastName,
             userName: args.userName.toLowerCase(),
-            password: args.password
+            password: hash
           });
         }
       }

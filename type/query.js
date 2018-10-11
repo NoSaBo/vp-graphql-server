@@ -8,6 +8,7 @@ import {
   GraphQLList,
   GraphQLNonNull
 } from "graphql";
+import * as bcrypt from "bcrypt";
 
 import Employee from "../model/employee";
 import Branch from "../model/branch";
@@ -41,14 +42,13 @@ const QueryType = new GraphQLObjectType({
           }
         },
         resolve(root, args) {
-          const user = Db.models.employee.findOne({ where: args });
-
-          if (!user) {
-            return {
-              error: "INVALID_EMAIL_PASSWORD"
-            };
-          }
-          return user;
+          return Db.models.employee
+            .findOne({ where: { userName: args.userName } })
+            .then(user => {
+              if (bcrypt.compareSync(args.password, user.get().password))
+                return user;
+              else return null;
+            });
         }
       },
       serviceShift: {

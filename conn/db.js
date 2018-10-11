@@ -1,6 +1,7 @@
 //@flow
 
 import Sequelize from "sequelize";
+import * as bcrypt from "bcrypt";
 import _ from "lodash";
 import Faker from "faker";
 
@@ -39,17 +40,21 @@ conn.sync({ force: true }).then(() => {
   //     userName: Faker.name.firstName()
   //   });
   // });
+
+  const saltRounds = 10;
+  const salt = bcrypt.genSaltSync(saltRounds);
+
   Employee.create({
     firstName: "Jesus",
     lastName: "Rey",
     userName: "jreyp",
-    password: "jesus"
+    password: bcrypt.hashSync("jesus", salt)
   });
   Employee.create({
     firstName: "Diego",
     lastName: "Buendia",
     userName: "dbuendia",
-    password: "diego"
+    password: bcrypt.hashSync("diego", salt)
   });
   Branch.create({
     branchName: "Jesus's House",
