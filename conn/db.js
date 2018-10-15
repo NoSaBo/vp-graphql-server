@@ -31,6 +31,7 @@ const ServiceShift = conn.define("serviceshift", ServiceShiftModel);
 Branch.hasMany(ServiceShift);
 ServiceShift.belongsTo(Branch);
 Employee.hasMany(ServiceShift);
+ServiceShift.belongsTo(Employee);
 
 conn.sync({ force: true }).then(() => {
   // _.times(4, () => {

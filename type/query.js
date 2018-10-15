@@ -2,6 +2,7 @@
 
 import {
   GraphQLObjectType,
+  GraphQLID,
   GraphQLString,
   GraphQLInt,
   GraphQLSchema,
@@ -55,7 +56,7 @@ const QueryType = new GraphQLObjectType({
         type: ServiceShift,
         args: {
           id: {
-            type: GraphQLInt
+            type: GraphQLID
           }
         },
         resolve(root, args) {
@@ -66,7 +67,7 @@ const QueryType = new GraphQLObjectType({
         type: Branch,
         args: {
           id: {
-            type: GraphQLInt
+            type: GraphQLID
           }
         },
         resolve(root, args) {

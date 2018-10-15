@@ -2,6 +2,7 @@
 
 import {
   GraphQLObjectType,
+  GraphQLID,
   GraphQLString,
   GraphQLInt,
   GraphQLSchema,
@@ -20,7 +21,7 @@ const ServiceShift = new GraphQLObjectType({
   fields: () => {
     return {
       id: {
-        type: GraphQLInt,
+        type: GraphQLID,
         resolve(serviceShift) {
           return serviceShift.id;
         }
