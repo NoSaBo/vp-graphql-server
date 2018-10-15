@@ -40,6 +40,8 @@
   },
   "devDependencies": {
     "babel-loader": "^8.0.4",
-    "babel-register": "^6.26.0"
+    "babel-register": "^6.26.0",
+    "flow": "^0.2.3",
+    "flow-bin": "^0.83.0"
   }
 }

@@ -1,7 +1,8 @@
-// @flow
+/* @flow */
 
 import {
   GraphQLObjectType,
+  GraphQLID,
   GraphQLString,
   GraphQLInt,
   GraphQLSchema,
@@ -20,7 +21,7 @@ const Employee = new GraphQLObjectType({
   fields: () => {
     return {
       id: {
-        type: GraphQLInt,
+        type: GraphQLID,
         resolve(employee) {
           return employee.id;
         }
@@ -39,6 +40,7 @@ const Employee = new GraphQLObjectType({
       },
       userName: {
         type: GraphQLString,
+        unique: true,
         resolve(employee) {
           return employee.userName;
         }

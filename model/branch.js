@@ -2,6 +2,7 @@
 
 import {
   GraphQLObjectType,
+  GraphQLID,
   GraphQLString,
   GraphQLInt,
   GraphQLFloat,
@@ -21,7 +22,7 @@ const Branch = new GraphQLObjectType({
   fields: () => {
     return {
       id: {
-        type: GraphQLInt,
+        type: GraphQLID,
         resolve(branch) {
           return branch.id;
         }
