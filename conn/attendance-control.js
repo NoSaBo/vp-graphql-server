@@ -1,15 +1,12 @@
 import Sequelize from "sequelize";
 
-const BranchModel = {
+const AttendanceControlModel = {
   id: {
     type: Sequelize.UUID,
     defaultValue: Sequelize.UUIDV1,
     primaryKey: true
   },
-  branch: {
-    type: Sequelize.STRING
-  },
-  address: {
+  photo: {
     type: Sequelize.STRING
   },
   latitude: {
@@ -18,15 +15,9 @@ const BranchModel = {
   longitude: {
     type: Sequelize.FLOAT
   },
-  contact: {
+  comment: {
     type: Sequelize.STRING
-  },
-  phone: {
-    type: Sequelize.STRING
-  },
-  active: {
-    type: Sequelize.BOOLEAN
   }
 };
 
-export default BranchModel;
+export default AttendanceControlModel;

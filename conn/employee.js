@@ -8,21 +8,26 @@ const EmployeeModel = {
     defaultValue: Sequelize.UUIDV1,
     primaryKey: true
   },
-  firstName: {
-    type: Sequelize.STRING,
-    allowNull: false
+  firstname: {
+    type: Sequelize.STRING
   },
-  lastName: {
-    type: Sequelize.STRING,
-    allowNull: false
+  lastname: {
+    type: Sequelize.STRING
   },
-  userName: {
-    type: Sequelize.STRING,
-    allowNull: false
+  user: {
+    type: Sequelize.STRING
   },
   password: {
-    type: Sequelize.STRING,
-    allowNull: false
+    type: Sequelize.STRING
+  },
+  dni: {
+    type: Sequelize.STRING
+  },
+  phone: {
+    type: Sequelize.STRING
+  },
+  active: {
+    type: Sequelize.BOOLEAN
   }
 };
 

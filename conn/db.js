@@ -8,6 +8,8 @@ import Faker from "faker";
 import EmployeeModel from "./employee";
 import BranchModel from "./branch";
 import ServiceShiftModel from "./service-shift";
+import AttendanceControlModel from "./attendance-control";
+import ParkingModel from "./parking";
 
 const conn = new Sequelize(
   "d8lclr6faernog", // database
@@ -15,22 +17,31 @@ const conn = new Sequelize(
   "695fb2928517140e66ebf0ce78617a9501ca37b326d7f3c3ad2394354eed11b8", // password
   {
     host: "ec2-54-235-94-36.compute-1.amazonaws.com",
-    dialect: "postgres",
-    ssl: true,
-    dialectOptions: {
-      ssl: true
-    }
+    dialect: "postgres"
+    // ssl: true,
+    // dialectOptions: {
+    //   ssl: true
+    // }
   }
 );
 
 const Employee = conn.define("employee", EmployeeModel);
 const Branch = conn.define("branch", BranchModel);
 const ServiceShift = conn.define("serviceshift", ServiceShiftModel);
+const AttendanceControl = conn.define(
+  "attendancecontrol",
+  AttendanceControlModel
+);
+const Parking = conn.define("parking", ParkingModel);
 
 // Relationships
 Branch.hasMany(ServiceShift);
 ServiceShift.belongsTo(Branch);
+
 Employee.hasMany(ServiceShift);
+
+ServiceShift.hasMany(Parking);
+Parking.belongsTo(ServiceShift);
 
 conn.sync({ force: true }).then(() => {
   // _.times(4, () => {
@@ -40,46 +51,44 @@ conn.sync({ force: true }).then(() => {
   //     userName: Faker.name.firstName()
   //   });
   // });
-
-  const saltRounds = 10;
-  const salt = bcrypt.genSaltSync(saltRounds);
-
-  Employee.create({
-    firstName: "Jesus",
-    lastName: "Rey",
-    userName: "jreyp",
-    password: bcrypt.hashSync("jesus", salt)
-  });
-  Employee.create({
-    firstName: "Diego",
-    lastName: "Buendia",
-    userName: "dbuendia",
-    password: bcrypt.hashSync("diego", salt)
-  });
-  Branch.create({
-    branchName: "Jesus's House",
-    address: "Ca. Las Tordillas 173",
-    latitude: -12.094413,
-    longitude: -77.019715
-  });
-  Branch.create({
-    branchName: "Yo Manejo S.A.C.",
-    address: "Av. Del Parque Norte 1126",
-    latitude: -12.09752,
-    longitude: -77.010324
-  });
-  Branch.create({
-    branchName: "Colegio Alpamayo",
-    address: "Ca. Bucaramanga 145",
-    latitude: -12.061806,
-    longitude: -76.937528
-  });
-  Branch.create({
-    branchName: "Shaniko Common",
-    address: "Warm Springs Blvd",
-    latitude: 37.488448,
-    longitude: -121.927627
-  });
+  // const saltRounds = 10;
+  // const salt = bcrypt.genSaltSync(saltRounds);
+  // Employee.create({
+  //   firstName: "Jesus",
+  //   lastName: "Rey",
+  //   userName: "jreyp",
+  //   password: bcrypt.hashSync("jesus", salt)
+  // });
+  // Employee.create({
+  //   firstName: "Diego",
+  //   lastName: "Buendia",
+  //   userName: "dbuendia",
+  //   password: bcrypt.hashSync("diego", salt)
+  // });
+  // Branch.create({
+  //   branchName: "Jesus's House",
+  //   address: "Ca. Las Tordillas 173",
+  //   latitude: -12.094413,
+  //   longitude: -77.019715
+  // });
+  // Branch.create({
+  //   branchName: "Yo Manejo S.A.C.",
+  //   address: "Av. Del Parque Norte 1126",
+  //   latitude: -12.09752,
+  //   longitude: -77.010324
+  // });
+  // Branch.create({
+  //   branchName: "Colegio Alpamayo",
+  //   address: "Ca. Bucaramanga 145",
+  //   latitude: -12.061806,
+  //   longitude: -76.937528
+  // });
+  // Branch.create({
+  //   branchName: "Shaniko Common",
+  //   address: "Warm Springs Blvd",
+  //   latitude: 37.488448,
+  //   longitude: -121.927627
+  // });
   // ServiceShift.create({
   //   date: "18/09",
   //   begin: "11:00 am",

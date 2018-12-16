@@ -8,7 +8,8 @@ import {
   GraphQLFloat,
   GraphQLSchema,
   GraphQLList,
-  GraphQLNonNull
+  GraphQLNonNull,
+  GraphQLBoolean
 } from "graphql";
 
 import Employee from "./employee";
@@ -27,10 +28,10 @@ const Branch = new GraphQLObjectType({
           return branch.id;
         }
       },
-      branchName: {
+      branch: {
         type: GraphQLString,
         resolve(branch) {
-          return branch.branchName;
+          return branch.branch;
         }
       },
       address: {
@@ -49,6 +50,24 @@ const Branch = new GraphQLObjectType({
         type: GraphQLFloat,
         resolve(branch) {
           return branch.longitude;
+        }
+      },
+      contact: {
+        type: GraphQLString,
+        resolve(branch) {
+          return branch.contact;
+        }
+      },
+      phone: {
+        type: GraphQLString,
+        resolve(branch) {
+          return branch.phone;
+        }
+      },
+      active: {
+        type: GraphQLBoolean,
+        resolve(branch) {
+          return branch.active;
         }
       },
       shift: {
