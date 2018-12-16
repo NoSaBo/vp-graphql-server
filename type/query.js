@@ -72,7 +72,13 @@ const QueryType = new GraphQLObjectType({
         resolve(root, args) {
           return Db.models.branch.findOne({ where: args });
         }
-      }
+      },
+      Employees: {
+        type: new GraphQLList(Employee),
+        resolve(parent,args) {
+            return Db.models.employee.findAll({where: args});
+        },
+    },
     };
   }
 });
