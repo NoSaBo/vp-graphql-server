@@ -1,4 +1,4 @@
-//@flow
+/* @flow */
 
 import Sequelize from "sequelize";
 import * as bcrypt from "bcrypt";
@@ -80,48 +80,48 @@ conn.sync({ force: true }).then(() => {
     latitude: 37.488448,
     longitude: -121.927627
   });
-  ServiceShift.create({
-    date: "18/09",
-    begin: "11:00 am",
-    end: "4:00 pm",
-    branchId: "1",
-    employeeId: "1"
-  });
-  ServiceShift.create({
-    date: "19/09",
-    begin: "12:00 am",
-    end: "3:00 pm",
-    branchId: "2",
-    employeeId: "1"
-  });
-  ServiceShift.create({
-    date: "20/09",
-    begin: "12:00 am",
-    end: "3:00 pm",
-    branchId: "3",
-    employeeId: "1"
-  });
-  ServiceShift.create({
-    date: "21/09",
-    begin: "10:00 am",
-    end: "4:00 pm",
-    branchId: "4",
-    employeeId: "1"
-  });
-  ServiceShift.create({
-    date: "18/09",
-    begin: "10:00 am",
-    end: "2:00 pm",
-    branchId: "2",
-    employeeId: "2"
-  });
-  ServiceShift.create({
-    date: "19/09",
-    begin: "2:00 pm",
-    end: "6:00 pm",
-    branchId: "1",
-    employeeId: "2"
-  });
+  // ServiceShift.create({
+  //   date: "18/09",
+  //   begin: "11:00 am",
+  //   end: "4:00 pm",
+  //   branchId: "1",
+  //   employeeId: "1"
+  // });
+  // ServiceShift.create({
+  //   date: "19/09",
+  //   begin: "12:00 am",
+  //   end: "3:00 pm",
+  //   branchId: "2",
+  //   employeeId: "1"
+  // });
+  // ServiceShift.create({
+  //   date: "20/09",
+  //   begin: "12:00 am",
+  //   end: "3:00 pm",
+  //   branchId: "3",
+  //   employeeId: "1"
+  // });
+  // ServiceShift.create({
+  //   date: "21/09",
+  //   begin: "10:00 am",
+  //   end: "4:00 pm",
+  //   branchId: "4",
+  //   employeeId: "1"
+  // });
+  // ServiceShift.create({
+  //   date: "18/09",
+  //   begin: "10:00 am",
+  //   end: "2:00 pm",
+  //   branchId: "2",
+  //   employeeId: "2"
+  // });
+  // ServiceShift.create({
+  //   date: "19/09",
+  //   begin: "2:00 pm",
+  //   end: "6:00 pm",
+  //   branchId: "1",
+  //   employeeId: "2"
+  // });
 });
 
 export default conn;
