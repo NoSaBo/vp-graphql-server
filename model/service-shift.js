@@ -4,11 +4,19 @@ import {
   GraphQLObjectType,
   GraphQLID,
   GraphQLString,
+  GraphQL
   GraphQLInt,
   GraphQLSchema,
   GraphQLList,
-  GraphQLNonNull
+  GraphQLNonNull,
+  GraphQLBoolean
 } from "graphql";
+
+import {
+  GraphQLDate,
+  GraphQLTime,
+  GraphQLDateTime
+} from 'graphql-iso-date';
 
 import Employee from "./employee";
 import Branch from "./branch";
@@ -26,36 +34,24 @@ const ServiceShift = new GraphQLObjectType({
           return serviceShift.id;
         }
       },
-      date: {
-        type: GraphQLString,
+      begindate: {
+        type: GraphQLDateTime,
         resolve(serviceShift) {
-          return serviceShift.date;
+          return serviceShift.begindate;
         }
       },
-      begin: {
-        type: GraphQLString,
+      workspan: {
+        type: GraphQLTime,
         resolve(serviceShift) {
-          return serviceShift.begin;
+          return serviceShift.workspan;
         }
       },
-      end: {
-        type: GraphQLString,
+      active: {
+        type: GraphQLBoolean,
         resolve(serviceShift) {
-          return serviceShift.end;
+          return serviceShift.active;
         }
       },
-      branch: {
-        type: Branch,
-        resolve(serviceShift) {
-          return serviceShift.getBranch();
-        }
-      },
-      employee: {
-        type: Employee,
-        resolve(serviceShift) {
-          return serviceShift.getEmployee();
-        }
-      }
     };
   }
 });

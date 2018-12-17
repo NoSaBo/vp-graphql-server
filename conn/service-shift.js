@@ -6,17 +6,14 @@ const ServiceShiftModel = {
     defaultValue: Sequelize.UUIDV1,
     primaryKey: true
   },
-  date: {
-    type: Sequelize.STRING,
-    allowNull: false
+  begindate: {
+    type: Sequelize.DATE
   },
-  begin: {
-    type: Sequelize.STRING,
-    allowNull: false
+  workspan: {
+    type: Sequelize.DATE
   },
-  end: {
-    type: Sequelize.STRING,
-    allowNull: false
+  active: {
+    type: Sequelize.BOOLEAN
   }
 };
 
