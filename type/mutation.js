@@ -6,7 +6,8 @@ import {
   GraphQLInt,
   GraphQLSchema,
   GraphQLList,
-  GraphQLNonNull
+  GraphQLNonNull,
+  GraphQLBoolean
 } from "graphql";
 import * as bcrypt from "bcrypt";
 
@@ -24,17 +25,26 @@ const MutationType = new GraphQLObjectType({
       addEmployee: {
         type: Employee,
         args: {
-          firstName: {
+          firstname: {
             type: new GraphQLNonNull(GraphQLString)
           },
-          lastName: {
+          lastname: {
             type: new GraphQLNonNull(GraphQLString)
           },
-          userName: {
+          user: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          dni: {
             type: new GraphQLNonNull(GraphQLString)
           },
           password: {
             type: new GraphQLNonNull(GraphQLString)
+          },
+          phone: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          active: {
+            type: new GraphQLNonNull(GraphQLBoolean)
           }
         },
         resolve(root, args) {
@@ -43,13 +53,36 @@ const MutationType = new GraphQLObjectType({
           const hash = bcrypt.hashSync(args.password, salt);
 
           return Db.models.employee.create({
-            firstName: args.firstName,
-            lastName: args.lastName,
-            userName: args.userName.toLowerCase(),
-            password: hash
+            firstname: args.firstname,
+            lastname: args.lastname,
+            user: args.user.toLowerCase(),
+            dni: args.dni,
+            password: hash,
+            phone: args.phone,
+            active: args.active
           });
         }
-      }
+      },
+      deleteEmployee: {
+        type: Employee,
+        args: {
+            user: {
+                type: new GraphQLNonNull(GraphQLString)
+            }
+        },
+        resolve(parent, args) {
+            return Db.models.employee.findOne({where: {user: args.user }})
+            .then( (result) => {
+                Db.models.employee.destroy({
+                    where: {
+                        user: args.user.toLowerCase()
+                    }
+                })
+                return result;
+                }
+            );
+        }
+    },
     };
   }
 });

@@ -17,11 +17,11 @@ const conn = new Sequelize(
   "695fb2928517140e66ebf0ce78617a9501ca37b326d7f3c3ad2394354eed11b8", // password
   {
     host: "ec2-54-235-94-36.compute-1.amazonaws.com",
-    dialect: "postgres"
-    // ssl: true,
-    // dialectOptions: {
-    //   ssl: true
-    // }
+    dialect: "postgres",
+    ssl: true,
+    dialectOptions: {
+      ssl: true
+    }
   }
 );
 
@@ -43,7 +43,7 @@ Employee.hasMany(ServiceShift);
 ServiceShift.hasMany(Parking);
 Parking.belongsTo(ServiceShift);
 
-conn.sync({ force: true }).then(() => {
+conn.sync({ force: false }).then(() => {
   // _.times(4, () => {
   //   return Employee.create({
   //     firstName: Faker.name.firstName(),

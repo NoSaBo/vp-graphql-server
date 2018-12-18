@@ -4,7 +4,6 @@ import {
   GraphQLObjectType,
   GraphQLID,
   GraphQLString,
-  GraphQL
   GraphQLInt,
   GraphQLSchema,
   GraphQLList,
