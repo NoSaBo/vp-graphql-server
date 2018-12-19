@@ -3,6 +3,8 @@
 import {
   GraphQLObjectType,
   GraphQLString,
+  GraphQLID,
+  GraphQLFloat,
   GraphQLInt,
   GraphQLSchema,
   GraphQLList,
@@ -63,6 +65,43 @@ const MutationType = new GraphQLObjectType({
           });
         }
       },
+      addBranch: {
+        type: Branch,
+        args: {
+          branch: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          address: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          latitude: {
+            type: new GraphQLNonNull(GraphQLFloat)
+          },
+          longitude: {
+            type: new GraphQLNonNull(GraphQLFloat)
+          },
+          contact: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          phone: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          active: {
+            type: new GraphQLNonNull(GraphQLBoolean)
+          }
+        },
+        resolve(root, args) {
+          return Db.models.branch.create({
+            branch: args.branch,
+            address: args.address,
+            latitude: args.latitude,
+            longitude: args.longitude,
+            contact: args.contact,
+            phone: args.phone,
+            active: args.active
+          });
+        }
+      },
       deleteEmployee: {
         type: Employee,
         args: {
@@ -83,6 +122,26 @@ const MutationType = new GraphQLObjectType({
             );
         }
     },
+    deleteBranch: {
+      type: Branch,
+      args: {
+          id: {
+              type: new GraphQLNonNull(GraphQLID)
+          }
+      },
+      resolve(parent, args) {
+          return Db.models.branch.findOne({where: {id: args.id }})
+          .then( (result) => {
+              Db.models.branch.destroy({
+                  where: {
+                      id: args.id
+                  }
+              })
+              return result;
+              }
+          );
+      }
+  },
     };
   }
 });

@@ -64,18 +64,23 @@ const QueryType = new GraphQLObjectType({
         }
       },
       branches: {
-        type: Branch,
+        type: new GraphQLList(Branch),
         args: {
           id: {
             type: GraphQLID
           }
         },
         resolve(root, args) {
-          return Db.models.branch.findOne({ where: args });
+          return Db.models.branch.findAll({ where: args });
         }
       },
-      Employees: {
+      employees: {
         type: new GraphQLList(Employee),
+        args: {
+          user: {
+            type: GraphQLString
+          }
+        },
         resolve(parent,args) {
             return Db.models.employee.findAll({where: args});
         },
