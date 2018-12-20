@@ -21,17 +21,6 @@ const QueryType = new GraphQLObjectType({
   name: "QueryType",
   fields: () => {
     return {
-      employee: {
-        type: Employee,
-        args: {
-          userName: {
-            type: GraphQLString
-          }
-        },
-        resolve(root, args) {
-          return Db.models.employee.findOne({ where: args });
-        }
-      },
       login: {
         type: Employee,
         args: {
@@ -52,15 +41,15 @@ const QueryType = new GraphQLObjectType({
             });
         }
       },
-      serviceShift: {
-        type: ServiceShift,
+      serviceShifts: {
+        type: new GraphQLList(ServiceShift),
         args: {
           id: {
             type: GraphQLID
           }
         },
         resolve(root, args) {
-          return Db.models.serviceshift.findOne({ where: args });
+          return Db.models.serviceshift.findAll({ where: args });
         }
       },
       branches: {

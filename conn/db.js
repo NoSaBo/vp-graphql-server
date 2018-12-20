@@ -38,7 +38,8 @@ const Parking = conn.define("parking", ParkingModel);
 Branch.hasMany(ServiceShift);
 ServiceShift.belongsTo(Branch);
 
-Employee.hasMany(ServiceShift);
+Employee.hasMany(ServiceShift); //employeeId to serviceShift
+ServiceShift.belongsTo(Employee); 
 
 ServiceShift.hasMany(Parking);
 Parking.belongsTo(ServiceShift);

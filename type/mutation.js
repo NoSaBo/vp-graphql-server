@@ -9,8 +9,9 @@ import {
   GraphQLSchema,
   GraphQLList,
   GraphQLNonNull,
-  GraphQLBoolean
+  GraphQLBoolean,
 } from "graphql";
+import {GraphQLDateTime, GraphQLTime} from 'graphql-iso-date';
 import * as bcrypt from "bcrypt";
 
 import Employee from "../model/employee";
@@ -102,6 +103,36 @@ const MutationType = new GraphQLObjectType({
           });
         }
       },
+      addServiceShift: {
+        type: ServiceShift,
+        args: {
+          begindate: {
+            type: new GraphQLNonNull(GraphQLDateTime)
+          },
+          workspan: {
+            type: new GraphQLNonNull(GraphQLTime)
+          },
+          active: {
+            type: new GraphQLNonNull(GraphQLBoolean)
+          },
+          branchId: {
+            type: new GraphQLNonNull(GraphQLID)
+          },
+          employeeId: {
+            type: new GraphQLNonNull(GraphQLID)
+          },
+        },
+        resolve(root, args) {
+          console.log("db.models", Db.models);
+          return Db.models.serviceshift.create({
+            begindate: args.begindate,
+            workspan: args.workspan,
+            active: args.active,
+            branchId: args.branchId,
+            employeeId: args.employeeId
+          });
+        }
+      },
       deleteEmployee: {
         type: Employee,
         args: {
@@ -142,6 +173,26 @@ const MutationType = new GraphQLObjectType({
           );
       }
   },
+  deleteServiceShift: {
+    type: ServiceShift,
+    args: {
+        id: {
+            type: new GraphQLNonNull(GraphQLID)
+        }
+    },
+    resolve(parent, args) {
+        return Db.models.serviceshift.findOne({where: {id: args.id }})
+        .then( (result) => {
+            Db.models.serviceshift.destroy({
+                where: {
+                    id: args.id
+                }
+            })
+            return result;
+            }
+        );
+    }
+},
     };
   }
 });

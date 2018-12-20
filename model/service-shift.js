@@ -51,6 +51,18 @@ const ServiceShift = new GraphQLObjectType({
           return serviceShift.active;
         }
       },
+      branch: {
+        type: Branch,
+        resolve(serviceShift) {
+          return serviceShift.getBranch();
+        }
+      },
+      employee: {
+        type: Employee,
+        resolve(serviceShift) {
+          return serviceShift.getEmployee();
+        }
+      }
     };
   }
 });
