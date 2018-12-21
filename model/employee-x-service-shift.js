@@ -16,9 +16,9 @@ import ServiceShift from "./service-shift";
 
 import Db from "../conn/db";
 
-const AttendanceControl = new GraphQLObjectType({
-  name: "AttendanceControl",
-  description: "This represents an AttendanceControl",
+const EmployeeXServiceShift = new GraphQLObjectType({
+  name: "EmployeeXServiceShift",
+  description: "This represents a relation between Employee and ServiceShift",
   fields: () => {
     return {
       id: {
@@ -55,4 +55,4 @@ const AttendanceControl = new GraphQLObjectType({
   }
 });
 
-export default AttendanceControl;
+export default EmployeeXServiceShift;

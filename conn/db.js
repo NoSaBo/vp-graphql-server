@@ -8,7 +8,7 @@ import Faker from "faker";
 import EmployeeModel from "./employee";
 import BranchModel from "./branch";
 import ServiceShiftModel from "./service-shift";
-import AttendanceControlModel from "./attendance-control";
+import EmployeeXServiceShiftModel from "./employee-x-service-shift";
 import ParkingModel from "./parking";
 
 const conn = new Sequelize(
@@ -28,9 +28,9 @@ const conn = new Sequelize(
 const Employee = conn.define("employee", EmployeeModel);
 const Branch = conn.define("branch", BranchModel);
 const ServiceShift = conn.define("serviceshift", ServiceShiftModel);
-const AttendanceControl = conn.define(
-  "attendancecontrol",
-  AttendanceControlModel
+const EmployeeXServiceShift = conn.define(
+  "employeexserviceshift",
+  EmployeeXServiceShiftModel
 );
 const Parking = conn.define("parking", ParkingModel);
 
@@ -38,13 +38,13 @@ const Parking = conn.define("parking", ParkingModel);
 Branch.hasMany(ServiceShift);
 ServiceShift.belongsTo(Branch);
 
-Employee.hasMany(ServiceShift); //employeeId to serviceShift
-ServiceShift.belongsTo(Employee); 
+Employee.belongsToMany(ServiceShift, { through: EmployeeXServiceShift });
+ServiceShift.belongsToMany(Employee, { through: EmployeeXServiceShift });
 
 ServiceShift.hasMany(Parking);
 Parking.belongsTo(ServiceShift);
 
-conn.sync({ force: false }).then(() => {
+conn.sync({ force: true }).then(() => {
   // _.times(4, () => {
   //   return Employee.create({
   //     firstName: Faker.name.firstName(),

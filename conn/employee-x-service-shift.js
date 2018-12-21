@@ -1,6 +1,6 @@
 import Sequelize from "sequelize";
 
-const AttendanceControlModel = {
+const EmployeeXServiceShiftModel = {
   id: {
     type: Sequelize.UUID,
     defaultValue: Sequelize.UUIDV1,
@@ -20,4 +20,4 @@ const AttendanceControlModel = {
   }
 };
 
-export default AttendanceControlModel;
+export default EmployeeXServiceShiftModel;
