@@ -10,6 +10,7 @@ import BranchModel from "./branch";
 import ServiceShiftModel from "./service-shift";
 import EmployeeXServiceShiftModel from "./employee-x-service-shift";
 import ParkingModel from "./parking";
+import { dirname } from "path";
 
 const conn = new Sequelize(
   "d8lclr6faernog", // database
@@ -44,7 +45,7 @@ ServiceShift.belongsToMany(Employee, { through: EmployeeXServiceShift });
 ServiceShift.hasMany(Parking);
 Parking.belongsTo(ServiceShift);
 
-conn.sync({ force: true }).then(() => {
+conn.sync({ force: false }).then(() => {
   // _.times(4, () => {
   //   return Employee.create({
   //     firstName: Faker.name.firstName(),
@@ -55,45 +56,63 @@ conn.sync({ force: true }).then(() => {
   // const saltRounds = 10;
   // const salt = bcrypt.genSaltSync(saltRounds);
   // Employee.create({
-  //   firstName: "Jesus",
-  //   lastName: "Rey",
-  //   userName: "jreyp",
-  //   password: bcrypt.hashSync("jesus", salt)
+  //   firstname: "Jesus",
+  //   lastname: "Rey",
+  //   user: "jreyp",
+  //   password: bcrypt.hashSync("jesus", salt),
+  //   dni: "32424"
+  //   phone: "324234"
+  //   active: false
   // });
   // Employee.create({
-  //   firstName: "Diego",
-  //   lastName: "Buendia",
-  //   userName: "dbuendia",
-  //   password: bcrypt.hashSync("diego", salt)
+  //   firstname: "Diego",
+  //   lastname: "Buendia",
+  //   user: "dbuendia",
+  //   password: bcrypt.hashSync("diego", salt),
+  //   dni: "32424"
+  //   phone: "324234"
+  //   active: false
   // });
   // Branch.create({
-  //   branchName: "Jesus's House",
+  //   branch: "Jesus's House",
   //   address: "Ca. Las Tordillas 173",
   //   latitude: -12.094413,
-  //   longitude: -77.019715
+  //   longitude: -77.019715,
+  //   contact: "tu"
+  //   phone: "876"
+  //   active: true
   // });
   // Branch.create({
-  //   branchName: "Yo Manejo S.A.C.",
+  //   branch: "Yo Manejo S.A.C.",
   //   address: "Av. Del Parque Norte 1126",
   //   latitude: -12.09752,
-  //   longitude: -77.010324
+  //   longitude: -77.010324,
+  //   contact: "tu"
+  //   phone: "876"
+  //   active: true
   // });
   // Branch.create({
-  //   branchName: "Colegio Alpamayo",
+  //   branch: "Colegio Alpamayo",
   //   address: "Ca. Bucaramanga 145",
   //   latitude: -12.061806,
-  //   longitude: -76.937528
+  //   longitude: -76.937528,
+  //   contact: "tu"
+  //   phone: "876"
+  //   active: true
   // });
   // Branch.create({
-  //   branchName: "Shaniko Common",
+  //   branch: "Shaniko Common",
   //   address: "Warm Springs Blvd",
   //   latitude: 37.488448,
   //   longitude: -121.927627
+  //   contact: "yo"
+  //   phone: "23423"
+  //   active: true
   // });
   // ServiceShift.create({
-  //   date: "18/09",
-  //   begin: "11:00 am",
-  //   end: "4:00 pm",
+  //   begindate: "18/09",
+  //   workspan: "11:00 am",
+  //   active: "4:00 pm",
   //   branchId: "1",
   //   employeeId: "1"
   // });

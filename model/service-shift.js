@@ -57,10 +57,10 @@ const ServiceShift = new GraphQLObjectType({
           return serviceShift.getBranch();
         }
       },
-      employee: {
-        type: Employee,
+      employees: {
+        type: new GraphQLList(Employee),
         resolve(serviceShift) {
-          return serviceShift.getEmployee();
+          return serviceShift.getEmployees();
         }
       }
     };

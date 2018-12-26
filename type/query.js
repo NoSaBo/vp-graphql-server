@@ -14,6 +14,7 @@ import * as bcrypt from "bcrypt";
 import Employee from "../model/employee";
 import Branch from "../model/branch";
 import ServiceShift from "../model/service-shift";
+import Employeesxserviceshifts from "../model/employee-x-service-shift";
 
 import Db from "../conn/db";
 
@@ -49,7 +50,15 @@ const QueryType = new GraphQLObjectType({
           }
         },
         resolve(root, args) {
-          return Db.models.serviceshift.findAll({ where: args });
+          return Db.models.serviceshift.findAll({
+            include: [{
+                model: Db.models.employee,
+                through: {
+                  attributes: ["firstname", "lastname", "user", "dni", "phone", "active"]
+                }
+              }],
+              where: args
+          }); 
         }
       },
       branches: {
@@ -70,12 +79,24 @@ const QueryType = new GraphQLObjectType({
             type: GraphQLString
           }
         },
-        resolve(parent,args) {
+        resolve(parent,args) { 
             return Db.models.employee.findAll({where: args});
         },
-    },
+      },
+      employeesxserviceshifts: {
+        type: new GraphQLList(Employeesxserviceshifts),
+        args: {
+          id: {
+            type: GraphQLID
+          }
+        },
+        resolve(root, args) {      
+          return Db.models.employeexserviceshift.findAll({where: args});
+        }
+      }
     };
   }
 });
 
 export default QueryType;
+

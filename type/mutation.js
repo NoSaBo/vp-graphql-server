@@ -117,22 +117,43 @@ const MutationType = new GraphQLObjectType({
           },
           branchId: {
             type: new GraphQLNonNull(GraphQLID)
-          },
-          employeeId: {
-            type: new GraphQLNonNull(GraphQLID)
-          },
+          }
         },
         resolve(root, args) {
-          console.log("db.models", Db.models);
           return Db.models.serviceshift.create({
             begindate: args.begindate,
             workspan: args.workspan,
             active: args.active,
             branchId: args.branchId,
-            employeeId: args.employeeId
           });
         }
       },
+      addEmployeeToServiceShift: {
+        type: ServiceShift,
+        args: {
+          id: {
+            type: GraphQLID
+          },
+          employeeId: {
+            type: GraphQLID
+          }
+        },
+        resolve(root, args) {
+          return Db.models.serviceshift.findOne({
+            include: [{
+              model: Db.models.employee
+            }],
+            where: {id: args.id}
+          })
+          .then((result) =>  {
+            result.addEmployee(args.employeeId)
+          })
+          .then( () =>{
+            return Db.models.serviceshift.findOne({where: {id: args.id }})}
+          )
+        }
+      },
+
       deleteEmployee: {
         type: Employee,
         args: {
