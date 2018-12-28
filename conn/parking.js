@@ -1,32 +1,35 @@
 import Sequelize from "sequelize";
 
-const BranchModel = {
+const ParkingModel = {
   id: {
     type: Sequelize.UUID,
     defaultValue: Sequelize.UUIDV1,
     primaryKey: true
   },
-  branch: {
+  plate: {
     type: Sequelize.STRING
   },
-  address: {
+  owner: {
     type: Sequelize.STRING
   },
-  latitude: {
-    type: Sequelize.FLOAT
+  values: {
+    type: Sequelize.ARRAY(Sequelize.STRING)
   },
-  longitude: {
-    type: Sequelize.FLOAT
-  },
-  contact: {
+  comment: {
     type: Sequelize.STRING
   },
-  phone: {
+  damage: {
     type: Sequelize.STRING
   },
-  active: {
+  sign: {
+    type: Sequelize.STRING
+  },
+  token: {
+    type: Sequelize.STRING
+  },
+  returned: {
     type: Sequelize.BOOLEAN
   }
 };
 
-export default BranchModel;
+export default ParkingModel;

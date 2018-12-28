@@ -14,6 +14,7 @@ import * as bcrypt from "bcrypt";
 import Employee from "../model/employee";
 import Branch from "../model/branch";
 import ServiceShift from "../model/service-shift";
+import Employeesxserviceshifts from "../model/employee-x-service-shift";
 
 import Db from "../conn/db";
 
@@ -21,17 +22,6 @@ const QueryType = new GraphQLObjectType({
   name: "QueryType",
   fields: () => {
     return {
-      employee: {
-        type: Employee,
-        args: {
-          userName: {
-            type: GraphQLString
-          }
-        },
-        resolve(root, args) {
-          return Db.models.employee.findOne({ where: args });
-        }
-      },
       login: {
         type: Employee,
         args: {
@@ -52,26 +42,56 @@ const QueryType = new GraphQLObjectType({
             });
         }
       },
-      serviceShift: {
-        type: ServiceShift,
+      serviceShifts: {
+        type: new GraphQLList(ServiceShift),
         args: {
           id: {
             type: GraphQLID
           }
         },
         resolve(root, args) {
-          return Db.models.serviceshift.findOne({ where: args });
+          return Db.models.serviceshift.findAll({
+            include: [{
+                model: Db.models.employee,
+                through: {
+                  attributes: ["firstname", "lastname", "user", "dni", "phone", "active"]
+                }
+              }],
+              where: args
+          }); 
         }
       },
       branches: {
-        type: Branch,
+        type: new GraphQLList(Branch),
         args: {
           id: {
             type: GraphQLID
           }
         },
         resolve(root, args) {
-          return Db.models.branch.findOne({ where: args });
+          return Db.models.branch.findAll({ where: args });
+        }
+      },
+      employees: {
+        type: new GraphQLList(Employee),
+        args: {
+          user: {
+            type: GraphQLString
+          }
+        },
+        resolve(parent,args) { 
+            return Db.models.employee.findAll({where: args});
+        },
+      },
+      employeesxserviceshifts: {
+        type: new GraphQLList(Employeesxserviceshifts),
+        args: {
+          id: {
+            type: GraphQLID
+          }
+        },
+        resolve(root, args) {      
+          return Db.models.employeexserviceshift.findAll({where: args});
         }
       }
     };
@@ -79,3 +99,4 @@ const QueryType = new GraphQLObjectType({
 });
 
 export default QueryType;
+
