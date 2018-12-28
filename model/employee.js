@@ -1,12 +1,14 @@
-// @flow
+/* @flow */
 
 import {
   GraphQLObjectType,
+  GraphQLID,
   GraphQLString,
   GraphQLInt,
   GraphQLSchema,
   GraphQLList,
-  GraphQLNonNull
+  GraphQLNonNull,
+  GraphQLBoolean
 } from "graphql";
 
 import Branch from "./branch";
@@ -20,27 +22,47 @@ const Employee = new GraphQLObjectType({
   fields: () => {
     return {
       id: {
-        type: GraphQLInt,
+        type: GraphQLID,
         resolve(employee) {
           return employee.id;
         }
       },
-      firstName: {
+      firstname: {
         type: GraphQLString,
         resolve(employee) {
-          return employee.firstName;
+          return employee.firstname;
         }
       },
-      lastName: {
+      lastname: {
         type: GraphQLString,
         resolve(employee) {
-          return employee.lastName;
+          return employee.lastname;
         }
       },
-      userName: {
+      user: {
+        type: GraphQLString,
+        unique: true,
+        resolve(employee) {
+          return employee.user;
+        }
+      },
+      dni: {
+        type: GraphQLString,
+        unique: true,
+        resolve(employee) {
+          return employee.dni;
+        }
+      },
+      phone: {
         type: GraphQLString,
         resolve(employee) {
-          return employee.userName;
+          return employee.phone;
+        }
+      },
+      active: {
+        type: GraphQLBoolean,
+        resolve(employee) {
+          return employee.active;
         }
       },
       shifts: {

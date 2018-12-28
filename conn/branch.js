@@ -1,21 +1,31 @@
 import Sequelize from "sequelize";
 
 const BranchModel = {
-  branchName: {
-    type: Sequelize.STRING,
-    allowNull: false
+  id: {
+    type: Sequelize.UUID,
+    defaultValue: Sequelize.UUIDV1,
+    primaryKey: true
+  },
+  branch: {
+    type: Sequelize.STRING
   },
   address: {
-    type: Sequelize.STRING,
-    allowNull: false
+    type: Sequelize.STRING
   },
   latitude: {
-    type: Sequelize.FLOAT,
-    allowNull: false
+    type: Sequelize.FLOAT
   },
   longitude: {
-    type: Sequelize.FLOAT,
-    allowNull: false
+    type: Sequelize.FLOAT
+  },
+  contact: {
+    type: Sequelize.STRING
+  },
+  phone: {
+    type: Sequelize.STRING
+  },
+  active: {
+    type: Sequelize.BOOLEAN
   }
 };
 

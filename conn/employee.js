@@ -1,21 +1,33 @@
+/* @flow */
+
 import Sequelize from "sequelize";
 
 const EmployeeModel = {
-  firstName: {
-    type: Sequelize.STRING,
-    allowNull: false
+  id: {
+    type: Sequelize.UUID,
+    defaultValue: Sequelize.UUIDV1,
+    primaryKey: true
   },
-  lastName: {
-    type: Sequelize.STRING,
-    allowNull: false
+  firstname: {
+    type: Sequelize.STRING
   },
-  userName: {
-    type: Sequelize.STRING,
-    allowNull: false
+  lastname: {
+    type: Sequelize.STRING
+  },
+  user: {
+    type: Sequelize.STRING
   },
   password: {
-    type: Sequelize.STRING,
-    allowNull: false
+    type: Sequelize.STRING
+  },
+  dni: {
+    type: Sequelize.STRING
+  },
+  phone: {
+    type: Sequelize.STRING
+  },
+  active: {
+    type: Sequelize.BOOLEAN
   }
 };
 

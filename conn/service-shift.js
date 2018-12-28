@@ -1,17 +1,19 @@
 import Sequelize from "sequelize";
 
 const ServiceShiftModel = {
-  date: {
-    type: Sequelize.STRING,
-    allowNull: false
+  id: {
+    type: Sequelize.UUID,
+    defaultValue: Sequelize.UUIDV1,
+    primaryKey: true
   },
-  begin: {
-    type: Sequelize.STRING,
-    allowNull: false
+  begindate: {
+    type: Sequelize.DATE
   },
-  end: {
-    type: Sequelize.STRING,
-    allowNull: false
+  workspan: {
+    type: Sequelize.DATE
+  },
+  active: {
+    type: Sequelize.BOOLEAN
   }
 };
 
