@@ -46,6 +46,12 @@ const Employee = new GraphQLObjectType({
           return employee.user;
         }
       },
+      password: {
+        type: GraphQLString,
+        resolve(employee) {
+          return employee.password;
+        },
+      },
       dni: {
         type: GraphQLString,
         unique: true,
