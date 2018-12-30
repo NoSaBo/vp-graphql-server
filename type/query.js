@@ -25,7 +25,7 @@ const QueryType = new GraphQLObjectType({
       login: {
         type: Employee,
         args: {
-          userName: {
+          user: {
             type: new GraphQLNonNull(GraphQLString)
           },
           password: {
@@ -34,7 +34,7 @@ const QueryType = new GraphQLObjectType({
         },
         resolve(root, args) {
           return Db.models.employee
-            .findOne({ where: { userName: args.userName } })
+            .findOne({ where: { user: args.user } })
             .then(user => {
               if (bcrypt.compareSync(args.password, user.get().password))
                 return user;
@@ -51,14 +51,23 @@ const QueryType = new GraphQLObjectType({
         },
         resolve(root, args) {
           return Db.models.serviceshift.findAll({
-            include: [{
+            include: [
+              {
                 model: Db.models.employee,
                 through: {
-                  attributes: ["firstname", "lastname", "user", "dni", "phone", "active"]
+                  attributes: [
+                    "firstname",
+                    "lastname",
+                    "user",
+                    "dni",
+                    "phone",
+                    "active"
+                  ]
                 }
-              }],
-              where: args
-          }); 
+              }
+            ],
+            where: args
+          });
         }
       },
       branches: {
@@ -79,9 +88,9 @@ const QueryType = new GraphQLObjectType({
             type: GraphQLString
           }
         },
-        resolve(parent,args) { 
-            return Db.models.employee.findAll({where: args});
-        },
+        resolve(parent, args) {
+          return Db.models.employee.findAll({ where: args });
+        }
       },
       employeesxserviceshifts: {
         type: new GraphQLList(Employeesxserviceshifts),
@@ -90,8 +99,8 @@ const QueryType = new GraphQLObjectType({
             type: GraphQLID
           }
         },
-        resolve(root, args) {      
-          return Db.models.employeexserviceshift.findAll({where: args});
+        resolve(root, args) {
+          return Db.models.employeexserviceshift.findAll({ where: args });
         }
       }
     };
@@ -99,4 +108,3 @@ const QueryType = new GraphQLObjectType({
 });
 
 export default QueryType;
-
