@@ -9,9 +9,9 @@ import {
   GraphQLSchema,
   GraphQLList,
   GraphQLNonNull,
-  GraphQLBoolean,
+  GraphQLBoolean
 } from "graphql";
-import {GraphQLDateTime, GraphQLTime} from 'graphql-iso-date';
+import { GraphQLDateTime, GraphQLTime } from "graphql-iso-date";
 import * as bcrypt from "bcrypt";
 
 import Employee from "../model/employee";
@@ -59,13 +59,53 @@ const MutationType = new GraphQLObjectType({
             firstname: args.firstname,
             lastname: args.lastname,
             user: args.user.toLowerCase(),
-            dni: args.dni,
             password: hash,
+            dni: args.dni,
             phone: args.phone,
             active: args.active
           });
         }
       },
+      updateEmployee: {
+        type: Employee,
+        args: {
+          firstname: {
+            type: GraphQLString
+          },
+          lastname: {
+            type: GraphQLString
+          },
+          user: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          dni: {
+            type: GraphQLString
+          },
+          password: {
+            type: GraphQLString
+          },
+          phone: {
+            type: GraphQLString
+          },
+          active: {
+            type: GraphQLBoolean
+          }
+        },
+        resolve(roots, args) {
+          const saltRounds = 10;
+          const salt = bcrypt.genSaltSync(saltRounds);
+          console.log("args-antes", args);
+          args.password  = bcrypt.hashSync(args.password, salt);
+          console.log("args-despues", args);
+          return Db.models.employee.findOne({ where: { user: args.user } })
+            .then(result => {
+              return result.update(args, { returning: true }).then(updatedresult => {
+                return updatedresult;
+              });
+            });
+        }
+      },
+
       addBranch: {
         type: Branch,
         args: {
@@ -124,7 +164,7 @@ const MutationType = new GraphQLObjectType({
             begindate: args.begindate,
             workspan: args.workspan,
             active: args.active,
-            branchId: args.branchId,
+            branchId: args.branchId
           });
         }
       },
@@ -157,65 +197,92 @@ const MutationType = new GraphQLObjectType({
       deleteEmployee: {
         type: Employee,
         args: {
-            user: {
-                type: new GraphQLNonNull(GraphQLString)
-            }
+          user: {
+            type: new GraphQLNonNull(GraphQLString)
+          }
         },
         resolve(parent, args) {
-            return Db.models.employee.findOne({where: {user: args.user }})
-            .then( (result) => {
-                Db.models.employee.destroy({
-                    where: {
-                        user: args.user.toLowerCase()
-                    }
-                })
-                return result;
-                }
-            );
-        }
-    },
-    deleteBranch: {
-      type: Branch,
-      args: {
-          id: {
-              type: new GraphQLNonNull(GraphQLID)
-          }
-      },
-      resolve(parent, args) {
-          return Db.models.branch.findOne({where: {id: args.id }})
-          .then( (result) => {
-              Db.models.branch.destroy({
-                  where: {
-                      id: args.id
-                  }
-              })
-              return result;
-              }
-          );
-      }
-  },
-  deleteServiceShift: {
-    type: ServiceShift,
-    args: {
-        id: {
-            type: new GraphQLNonNull(GraphQLID)
-        }
-    },
-    resolve(parent, args) {
-        return Db.models.serviceshift.findOne({where: {id: args.id }})
-        .then( (result) => {
-            Db.models.serviceshift.destroy({
+          return Db.models.employee
+            .findOne({ where: { user: args.user } })
+            .then(result => {
+              Db.models.employee.destroy({
                 where: {
-                    id: args.id
+                  user: args.user.toLowerCase()
                 }
-            })
-            return result;
-            }
-        );
-    }
-},
+              });
+              return result;
+            });
+        }
+      },
+      deleteBranch: {
+        type: Branch,
+        args: {
+          id: {
+            type: new GraphQLNonNull(GraphQLID)
+          }
+        },
+        resolve(parent, args) {
+          return Db.models.branch
+            .findOne({ where: { id: args.id } })
+            .then(result => {
+              Db.models.branch.destroy({
+                where: {
+                  id: args.id
+                }
+              });
+              return result;
+            });
+        }
+      },
+      deleteServiceShift: {
+        type: ServiceShift,
+        args: {
+          id: {
+            type: new GraphQLNonNull(GraphQLID)
+          }
+        },
+        resolve(parent, args) {
+          return Db.models.serviceshift
+            .findOne({ where: { id: args.id } })
+            .then(result => {
+              Db.models.serviceshift.destroy({
+                where: {
+                  id: args.id
+                }
+              });
+              return result;
+            });
+        }
+      },
+      deleteEmployeeFromServiceShift: {
+        type: ServiceShift,
+        args: {
+          id: {
+            type: GraphQLID
+          },
+          employeeId: {
+            type: GraphQLID
+          }
+        },
+        resolve(root, args) {
+          return Db.models.serviceshift.findOne({
+            include: [{
+              model: Db.models.employee
+            }],
+            where: {id: args.id}
+          })
+          .then((result) =>  {
+            result.removeEmployee(args.employeeId)
+          })
+          .then( () =>{
+            return Db.models.serviceshift.findOne({where: {id: args.id }})}
+          )
+        }
+      },
     };
   }
 });
+
+
 
 export default MutationType;
