@@ -11,6 +11,10 @@ import {
   GraphQLNonNull
 } from "graphql";
 
+import {
+  GraphQLDateTime
+} from 'graphql-iso-date';
+
 import Employee from "./employee";
 import ServiceShift from "./service-shift";
 
@@ -49,6 +53,12 @@ const EmployeeXServiceShift = new GraphQLObjectType({
         type: GraphQLString,
         resolve(attendance) {
           return attendance.comment;
+        }
+      },
+      start: {
+        type: GraphQLDateTime,
+        resolve(attendance) {
+          return attendance.start;
         }
       }
     };

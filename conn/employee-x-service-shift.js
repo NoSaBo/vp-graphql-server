@@ -17,6 +17,9 @@ const EmployeeXServiceShiftModel = {
   },
   comment: {
     type: Sequelize.STRING
+  },
+  start: {
+    type: Sequelize.DATE
   }
 };
 
