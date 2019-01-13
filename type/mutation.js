@@ -215,7 +215,7 @@ const MutationType = new GraphQLObjectType({
             type: new GraphQLNonNull(GraphQLDateTime)
           },
           workspan: {
-            type: new GraphQLNonNull(GraphQLTime)
+            type: new GraphQLNonNull(GraphQLDateTime)
           },
           active: {
             type: new GraphQLNonNull(GraphQLBoolean)

@@ -40,7 +40,7 @@ const ServiceShift = new GraphQLObjectType({
         }
       },
       workspan: {
-        type: GraphQLTime,
+        type: GraphQLDateTime,
         resolve(serviceShift) {
           return serviceShift.workspan;
         }
