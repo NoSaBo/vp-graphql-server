@@ -67,110 +67,6 @@ const MutationType = new GraphQLObjectType({
           });
         }
       },
-      updateEmployee: {
-        type: Employee,
-        args: {
-          firstname: {
-            type: GraphQLString
-          },
-          lastname: {
-            type: GraphQLString
-          },
-          user: {
-            type: new GraphQLNonNull(GraphQLString)
-          },
-          dni: {
-            type: GraphQLString
-          },
-          password: {
-            type: GraphQLString
-          },
-          phone: {
-            type: GraphQLString
-          },
-          active: {
-            type: GraphQLBoolean
-          }
-        },
-        resolve(roots, args) {
-          const saltRounds = 10;
-          const salt = bcrypt.genSaltSync(saltRounds);
-          console.log("args-antes", args);
-          args.password = bcrypt.hashSync(args.password, salt);
-          console.log("args-despues", args);
-          return Db.models.employee
-            .findOne({ where: { user: args.user } })
-            .then(result => {
-              return result
-                .update(args, { returning: true })
-                .then(updatedresult => {
-                  return updatedresult;
-                });
-            });
-        }
-      },
-      updateEmployeesxServiceShifts: {
-        type: ServiceShift,
-        args: {
-          photo: {
-            type: new GraphQLNonNull(GraphQLString)
-          },
-          latitude: {
-            type: new GraphQLNonNull(GraphQLFloat)
-          },
-          longitude: {
-            type: new GraphQLNonNull(GraphQLFloat)
-          },
-          comment: {
-            type: new GraphQLNonNull(GraphQLString)
-          },
-          start: {
-            type: new GraphQLNonNull(GraphQLDateTime)
-          },
-          employeeId: {
-            type: new GraphQLNonNull(GraphQLID)
-          },
-          serviceShiftId: {
-            type: new GraphQLNonNull(GraphQLID)
-          }
-        },
-        resolve(roots, args) {
-          return Db.models.serviceshift
-            .findOne({
-              include: [
-                {
-                  model: Db.models.employee
-                }
-              ],
-              where: { id: args.serviceShiftId }
-            })
-            .then( (serviceshift) => {
-              Db.models.employee.findOne({where: {id: args.employeeId}})
-              .then((employee) => {
-                serviceshift.setEmployees([employee], {through: { 
-                  photo: args.photo,
-                  latitude: args.latitude,
-                  longitude: args.longitude,
-                  comment: args.comment,
-                  start: args.start
-                }});
-              })
-            })
-              
-            
-            // .then(result => {
-            //   result.addEmployee(
-            //     Db.models.employee.findOne({ where: { id: args.employeeId } }),
-            //     { through: { photo: "oli" } }
-            //   );
-            // });
-
-          // return Db.models.serviceshift.findOne({
-          //   where: {id: args.id},
-          //   include: [{model: Db.models.employee}]
-          // })
-        }
-      },
       addBranch: {
         type: Branch,
         args: {
@@ -261,7 +157,128 @@ const MutationType = new GraphQLObjectType({
             });
         }
       },
-
+      updateEmployee: {
+        type: Employee,
+        args: {
+          firstname: {
+            type: GraphQLString
+          },
+          lastname: {
+            type: GraphQLString
+          },
+          user: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          dni: {
+            type: GraphQLString
+          },
+          password: {
+            type: GraphQLString
+          },
+          phone: {
+            type: GraphQLString
+          },
+          active: {
+            type: GraphQLBoolean
+          }
+        },
+        resolve(roots, args) {
+          const saltRounds = 10;
+          const salt = bcrypt.genSaltSync(saltRounds);
+          console.log("args-antes", args);
+          args.password = bcrypt.hashSync(args.password, salt);
+          console.log("args-despues", args);
+          return Db.models.employee
+            .findOne({ where: { user: args.user } })
+            .then(result => {
+              return result
+                .update(args, { returning: true })
+                .then(updatedresult => {
+                  return updatedresult;
+                });
+            });
+        }
+      },
+      // updateServiceShift: {
+      //   type: ServiceShift,
+      //   args: {
+      //     id: {
+      //       type: new GraphQLNonNull(GraphQLID)
+      //     },
+      //     begindate: {
+      //       type: new GraphQLNonNull(GraphQLDateTime)
+      //     },
+      //     workspan: {
+      //       type: new GraphQLNonNull(GraphQLDateTime)
+      //     },
+      //     active: {
+      //       type: new GraphQLNonNull(GraphQLBoolean)
+      //     },
+      //     branchId: {
+      //       type: new GraphQLNonNull(GraphQLID)
+      //     }
+      //   },
+      //   resolve(roots, args) {
+      //     return Db.models.serviceshift
+      //       .findOne({ where: { id: args.id } })
+      //       .then(result => {
+      //         return result
+      //           .update(args, { returning: true })
+      //           .then(updatedresult => {
+      //             return updatedresult;
+      //           });
+      //       });
+      //   }
+      // },
+      updateEmployeesxServiceShifts: {
+        type: ServiceShift,
+        args: {
+          photo: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          latitude: {
+            type: new GraphQLNonNull(GraphQLFloat)
+          },
+          longitude: {
+            type: new GraphQLNonNull(GraphQLFloat)
+          },
+          comment: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          start: {
+            type: new GraphQLNonNull(GraphQLDateTime)
+          },
+          employeeId: {
+            type: new GraphQLNonNull(GraphQLID)
+          },
+          serviceShiftId: {
+            type: new GraphQLNonNull(GraphQLID)
+          }
+        },
+        resolve(roots, args) {
+          return Db.models.serviceshift
+            .findOne({
+              include: [
+                {
+                  model: Db.models.employee
+                }
+              ],
+              where: { id: args.serviceShiftId }
+            })
+            .then( (serviceshift) => {
+              Db.models.employee.findOne({where: {id: args.employeeId}})
+              .then((employee) => {
+                serviceshift.setEmployees([employee], {through: { 
+                  photo: args.photo,
+                  latitude: args.latitude,
+                  longitude: args.longitude,
+                  comment: args.comment,
+                  start: args.start
+                }});
+              })
+            })
+        }
+      },
       deleteEmployee: {
         type: Employee,
         args: {
