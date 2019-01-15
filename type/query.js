@@ -15,6 +15,7 @@ import Employee from "../model/employee";
 import Branch from "../model/branch";
 import ServiceShift from "../model/service-shift";
 import Employeesxserviceshifts from "../model/employee-x-service-shift";
+import Parking from "../model/parking";
 
 import Db from "../conn/db";
 
@@ -102,7 +103,18 @@ const QueryType = new GraphQLObjectType({
         resolve(root, args) {
           return Db.models.employeexserviceshift.findAll({ where: args });
         }
-      }
+      },
+      parkings: {
+        type: new GraphQLList(Parking),
+        args: {
+          id: {
+            type: GraphQLID
+          }
+        },
+        resolve(root, args) {
+          return Db.models.parking.findAll({ where: args });
+        }
+      },
     };
   }
 });
