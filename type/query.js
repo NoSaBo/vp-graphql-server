@@ -37,7 +37,10 @@ const QueryType = new GraphQLObjectType({
           return Db.models.employee
             .findOne({ where: { user: args.user } })
             .then(user => {
-              if (bcrypt.compareSync(args.password, user.get().password))
+              if (
+                user &&
+                bcrypt.compareSync(args.password, user.get().password)
+              )
                 return user;
               else return null;
             });
