@@ -18,6 +18,7 @@ import Employee from "../model/employee";
 import Branch from "../model/branch";
 import ServiceShift from "../model/service-shift";
 import EmployeexServiceShifts from "../model/employee-x-service-shift";
+import Parking from "../model/parking";
 
 import Db from "../conn/db";
 
@@ -144,26 +145,28 @@ const MutationType = new GraphQLObjectType({
               ],
               where: { id: args.serviceShiftId }
             })
-            .then( (serviceshift) => {
-              Db.models.employee.findOne({where: {id: args.employeeId}})
-              .then((employee) => {
-                serviceshift.setEmployees([employee], {through: { 
-                  photo: args.photo,
-                  latitude: args.latitude,
-                  longitude: args.longitude,
-                  comment: args.comment,
-                  start: args.start
-                }});
-              })
-            })
-              
-            
-            // .then(result => {
-            //   result.addEmployee(
-            //     Db.models.employee.findOne({ where: { id: args.employeeId } }),
-            //     { through: { photo: "oli" } }
-            //   );
-            // });
+            .then(serviceshift => {
+              Db.models.employee
+                .findOne({ where: { id: args.employeeId } })
+                .then(employee => {
+                  serviceshift.setEmployees([employee], {
+                    through: {
+                      photo: args.photo,
+                      latitude: args.latitude,
+                      longitude: args.longitude,
+                      comment: args.comment,
+                      start: args.start
+                    }
+                  });
+                });
+            });
+
+          // .then(result => {
+          //   result.addEmployee(
+          //     Db.models.employee.findOne({ where: { id: args.employeeId } }),
+          //     { through: { photo: "oli" } }
+          //   );
+          // });
 
           // return Db.models.serviceshift.findOne({
           //   where: {id: args.id},
@@ -261,7 +264,47 @@ const MutationType = new GraphQLObjectType({
             });
         }
       },
-
+      addParking: {
+        type: Parking,
+        args: {
+          plate: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          owner: {
+            type: GraphQLString
+          },
+          values: {
+            type: new GraphQLList(GraphQLString)
+          },
+          comment: {
+            type: GraphQLString
+          },
+          damage: {
+            type: GraphQLString
+          },
+          sign: {
+            type: GraphQLString
+          },
+          token: {
+            type: GraphQLString
+          },
+          returned: {
+            type: GraphQLBoolean
+          }
+        },
+        resolve(root, args) {
+          return Db.models.parking.create({
+            plate: args.plate,
+            owner: args.owner,
+            values: args.values,
+            comment: args.comment,
+            damage: args.damage,
+            sign: args.sign,
+            token: args.token,
+            returned: false
+          });
+        }
+      },
       deleteEmployee: {
         type: Employee,
         args: {
