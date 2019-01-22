@@ -41,6 +41,8 @@ ServiceShift.belongsTo(Branch);
 
 Employee.belongsToMany(ServiceShift, { through: EmployeeXServiceShift });
 ServiceShift.belongsToMany(Employee, { through: EmployeeXServiceShift });
+// Employee.hasMany(EmployeeXServiceShift);
+// ServiceShift.belongsToMany(EmployeeXServiceShift);
 
 ServiceShift.hasMany(Parking);
 Parking.belongsTo(ServiceShift);
