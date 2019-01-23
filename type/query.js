@@ -96,19 +96,6 @@ const QueryType = new GraphQLObjectType({
           return Db.models.employee.findAll({ where: args });
         }
       },
-      // employeesxserviceshifts: {
-      //   type: new GraphQLList(Employeesxserviceshifts),
-      //   args: {
-      //     id: {
-      //       type: GraphQLID
-      //     }
-      //   },
-      //   resolve(root, args) {
-      //     return Db.models.employeexserviceshift.findAll({
-      //       where: args
-      //     });
-      //   }
-      // },
       employeesxserviceshifts: {
         type: new GraphQLList(Employeesxserviceshifts),
         args: {
@@ -118,18 +105,8 @@ const QueryType = new GraphQLObjectType({
         },
         resolve(root, args) {
           return Db.models.employeexserviceshift.findAll({
-            // include: [
-            //   {
-            //     model: Db.models.employee,
-            //     through: { attributes: ['firstname'] }
-            //   }
-            // ],
             where: args
-          })
-          // .then((result) => {
-          //   console.log("query-result", result[0].dataValues.employees.employeexserviceshift);
-          //   // innerJoin.findAll({ where: args });
-          // });
+          });
         }
       },
       parkings: {

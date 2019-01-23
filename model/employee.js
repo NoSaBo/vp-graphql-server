@@ -15,6 +15,7 @@ import Branch from "./branch";
 import ServiceShift from "./service-shift";
 
 import Db from "../conn/db";
+import EmployeeXServiceShift from "./employee-x-service-shift";
 
 const Employee = new GraphQLObjectType({
   name: "Employee",
@@ -75,6 +76,12 @@ const Employee = new GraphQLObjectType({
         type: new GraphQLList(ServiceShift),
         resolve(employee) {
           return employee.getServiceshifts();
+        }
+      },
+      empxssh: {
+        type: new GraphQLList(EmployeeXServiceShift),
+        resolve(employee) {
+          return [employee.employeexserviceshift];
         }
       }
     };
