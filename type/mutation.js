@@ -185,9 +185,7 @@ const MutationType = new GraphQLObjectType({
         resolve(roots, args) {
           const saltRounds = 10;
           const salt = bcrypt.genSaltSync(saltRounds);
-          console.log("args-antes", args);
           args.password = bcrypt.hashSync(args.password, salt);
-          console.log("args-despues", args);
           return Db.models.employee
             .findOne({ where: { user: args.user } })
             .then(result => {
@@ -199,37 +197,37 @@ const MutationType = new GraphQLObjectType({
             });
         }
       },
-      // updateServiceShift: {
-      //   type: ServiceShift,
-      //   args: {
-      //     id: {
-      //       type: new GraphQLNonNull(GraphQLID)
-      //     },
-      //     begindate: {
-      //       type: new GraphQLNonNull(GraphQLDateTime)
-      //     },
-      //     workspan: {
-      //       type: new GraphQLNonNull(GraphQLDateTime)
-      //     },
-      //     active: {
-      //       type: new GraphQLNonNull(GraphQLBoolean)
-      //     },
-      //     branchId: {
-      //       type: new GraphQLNonNull(GraphQLID)
-      //     }
-      //   },
-      //   resolve(roots, args) {
-      //     return Db.models.serviceshift
-      //       .findOne({ where: { id: args.id } })
-      //       .then(result => {
-      //         return result
-      //           .update(args, { returning: true })
-      //           .then(updatedresult => {
-      //             return updatedresult;
-      //           });
-      //       });
-      //   }
-      // },
+      updateServiceShift: {
+        type: ServiceShift,
+        args: {
+          id: {
+            type: new GraphQLNonNull(GraphQLID)
+          },
+          begindate: {
+            type: new GraphQLNonNull(GraphQLDateTime)
+          },
+          workspan: {
+            type: new GraphQLNonNull(GraphQLDateTime)
+          },
+          active: {
+            type: new GraphQLNonNull(GraphQLBoolean)
+          },
+          branchId: {
+            type: new GraphQLNonNull(GraphQLID)
+          }
+        },
+        resolve(roots, args) {
+          return Db.models.serviceshift
+            .findOne({ where: { id: args.id } })
+            .then(result => {
+              return result
+                .update(args, { returning: true })
+                .then(updatedresult => {
+                  return updatedresult;
+                });
+            });
+        }
+      },
       updateEmployeesxServiceShifts: {
         type: ServiceShift,
         args: {
