@@ -6,14 +6,12 @@ import {
   GraphQLString,
   GraphQLInt,
   GraphQLFloat,
-  GraphQLSchema,
   GraphQLList,
+  GraphQLSchema,
   GraphQLNonNull
 } from "graphql";
 
-import {
-  GraphQLDateTime
-} from 'graphql-iso-date';
+import { GraphQLDateTime } from "graphql-iso-date";
 
 import Employee from "./employee";
 import ServiceShift from "./service-shift";
@@ -59,6 +57,18 @@ const EmployeeXServiceShift = new GraphQLObjectType({
         type: GraphQLDateTime,
         resolve(attendance) {
           return attendance.start;
+        }
+      },
+      employeeId: {
+        type: GraphQLID,
+        resolve(attendance) {
+          return attendance.employeeId;
+        }
+      },
+      serviceshiftId: {
+        type: GraphQLID,
+        resolve(attendance) {
+          return attendance.serviceshiftId;
         }
       }
     };

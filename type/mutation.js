@@ -260,23 +260,29 @@ const MutationType = new GraphQLObjectType({
             .findOne({
               include: [
                 {
-                  model: Db.models.employee
+
+                  model: Db.models.employee,
+                  where: { id: args.employeeId }
+
                 }
               ],
               where: { id: args.serviceShiftId }
             })
-            .then( (serviceshift) => {
-              Db.models.employee.findOne({where: {id: args.employeeId}})
-              .then((employee) => {
-                serviceshift.setEmployees([employee], {through: { 
-                  photo: args.photo,
-                  latitude: args.latitude,
-                  longitude: args.longitude,
-                  comment: args.comment,
-                  start: args.start
-                }});
-              })
-            })
+            .then(serviceshift => {
+              Db.models.employee
+                .findOne({ where: { id: args.employeeId } })
+                .then(employee => {
+                  serviceshift.addEmployees(employee, {
+                    through: {
+                      photo: args.photo,
+                      latitude: args.latitude,
+                      longitude: args.longitude,
+                      comment: args.comment,
+                      start: args.start
+                    }
+                  });
+                });
+            });
         }
       },
       deleteEmployee: {

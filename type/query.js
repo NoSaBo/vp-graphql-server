@@ -104,7 +104,20 @@ const QueryType = new GraphQLObjectType({
           }
         },
         resolve(root, args) {
-          return Db.models.employeexserviceshift.findAll({ where: args });
+          return Db.models.employeexserviceshift.findAll({
+            where: args
+          });
+        }
+      },
+      parkings: {
+        type: new GraphQLList(Parking),
+        args: {
+          id: {
+            type: GraphQLID
+          }
+        },
+        resolve(root, args) {
+          return Db.models.parking.findAll({ where: args });
         }
       },
       parkings: {
