@@ -70,6 +70,12 @@ const Parking = new GraphQLObjectType({
           return parking.token;
         }
       },
+      serviceshift: {
+        type: ServiceShift,
+        resolve(parking){
+          return parking.getServiceshift();
+        }
+      },
       returned: {
         type: GraphQLBoolean,
         resolve(parking) {

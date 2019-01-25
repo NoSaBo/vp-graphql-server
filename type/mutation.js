@@ -67,6 +67,96 @@ const MutationType = new GraphQLObjectType({
           });
         }
       },
+      addBranch: {
+        type: Branch,
+        args: {
+          branch: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          address: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          latitude: {
+            type: new GraphQLNonNull(GraphQLFloat)
+          },
+          longitude: {
+            type: new GraphQLNonNull(GraphQLFloat)
+          },
+          contact: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          phone: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          active: {
+            type: new GraphQLNonNull(GraphQLBoolean)
+          }
+        },
+        resolve(root, args) {
+          return Db.models.branch.create({
+            branch: args.branch,
+            address: args.address,
+            latitude: args.latitude,
+            longitude: args.longitude,
+            contact: args.contact,
+            phone: args.phone,
+            active: args.active
+          });
+        }
+      },
+      addServiceShift: {
+        type: ServiceShift,
+        args: {
+          begindate: {
+            type: new GraphQLNonNull(GraphQLDateTime)
+          },
+          workspan: {
+            type: new GraphQLNonNull(GraphQLDateTime)
+          },
+          active: {
+            type: new GraphQLNonNull(GraphQLBoolean)
+          },
+          branchId: {
+            type: new GraphQLNonNull(GraphQLID)
+          }
+        },
+        resolve(root, args) {
+          return Db.models.serviceshift.create({
+            begindate: args.begindate,
+            workspan: args.workspan,
+            active: args.active,
+            branchId: args.branchId
+          });
+        }
+      },
+      addEmployeeToServiceShift: {
+        type: ServiceShift,
+        args: {
+          id: {
+            type: GraphQLID
+          },
+          employeeId: {
+            type: GraphQLID
+          }
+        },
+        resolve(root, args) {
+          return Db.models.serviceshift
+            .findOne({
+              include: [
+                {
+                  model: Db.models.employee
+                }
+              ],
+              where: { id: args.id }
+            })
+            .then(result => {
+              result.addEmployee(args.employeeId);
+            })
+            .then(() => {
+              return Db.models.serviceshift.findOne({ where: { id: args.id } });
+            });
+        }
+      },
       updateEmployee: {
         type: Employee,
         args: {
@@ -109,6 +199,37 @@ const MutationType = new GraphQLObjectType({
             });
         }
       },
+      // updateServiceShift: {
+      //   type: ServiceShift,
+      //   args: {
+      //     id: {
+      //       type: new GraphQLNonNull(GraphQLID)
+      //     },
+      //     begindate: {
+      //       type: new GraphQLNonNull(GraphQLDateTime)
+      //     },
+      //     workspan: {
+      //       type: new GraphQLNonNull(GraphQLDateTime)
+      //     },
+      //     active: {
+      //       type: new GraphQLNonNull(GraphQLBoolean)
+      //     },
+      //     branchId: {
+      //       type: new GraphQLNonNull(GraphQLID)
+      //     }
+      //   },
+      //   resolve(roots, args) {
+      //     return Db.models.serviceshift
+      //       .findOne({ where: { id: args.id } })
+      //       .then(result => {
+      //         return result
+      //           .update(args, { returning: true })
+      //           .then(updatedresult => {
+      //             return updatedresult;
+      //           });
+      //       });
+      //   }
+      // },
       updateEmployeesxServiceShifts: {
         type: ServiceShift,
         args: {
@@ -156,112 +277,8 @@ const MutationType = new GraphQLObjectType({
                 }});
               })
             })
-              
-            
-            // .then(result => {
-            //   result.addEmployee(
-            //     Db.models.employee.findOne({ where: { id: args.employeeId } }),
-            //     { through: { photo: "oli" } }
-            //   );
-            // });
-
-          // return Db.models.serviceshift.findOne({
-          //   where: {id: args.id},
-          //   include: [{model: Db.models.employee}]
-          // })
         }
       },
-      addBranch: {
-        type: Branch,
-        args: {
-          branch: {
-            type: new GraphQLNonNull(GraphQLString)
-          },
-          address: {
-            type: new GraphQLNonNull(GraphQLString)
-          },
-          latitude: {
-            type: new GraphQLNonNull(GraphQLFloat)
-          },
-          longitude: {
-            type: new GraphQLNonNull(GraphQLFloat)
-          },
-          contact: {
-            type: new GraphQLNonNull(GraphQLString)
-          },
-          phone: {
-            type: new GraphQLNonNull(GraphQLString)
-          },
-          active: {
-            type: new GraphQLNonNull(GraphQLBoolean)
-          }
-        },
-        resolve(root, args) {
-          return Db.models.branch.create({
-            branch: args.branch,
-            address: args.address,
-            latitude: args.latitude,
-            longitude: args.longitude,
-            contact: args.contact,
-            phone: args.phone,
-            active: args.active
-          });
-        }
-      },
-      addServiceShift: {
-        type: ServiceShift,
-        args: {
-          begindate: {
-            type: new GraphQLNonNull(GraphQLDateTime)
-          },
-          workspan: {
-            type: new GraphQLNonNull(GraphQLTime)
-          },
-          active: {
-            type: new GraphQLNonNull(GraphQLBoolean)
-          },
-          branchId: {
-            type: new GraphQLNonNull(GraphQLID)
-          }
-        },
-        resolve(root, args) {
-          return Db.models.serviceshift.create({
-            begindate: args.begindate,
-            workspan: args.workspan,
-            active: args.active,
-            branchId: args.branchId
-          });
-        }
-      },
-      addEmployeeToServiceShift: {
-        type: ServiceShift,
-        args: {
-          id: {
-            type: GraphQLID
-          },
-          employeeId: {
-            type: GraphQLID
-          }
-        },
-        resolve(root, args) {
-          return Db.models.serviceshift
-            .findOne({
-              include: [
-                {
-                  model: Db.models.employee
-                }
-              ],
-              where: { id: args.id }
-            })
-            .then(result => {
-              result.addEmployee(args.employeeId);
-            })
-            .then(() => {
-              return Db.models.serviceshift.findOne({ where: { id: args.id } });
-            });
-        }
-      },
-
       deleteEmployee: {
         type: Employee,
         args: {
