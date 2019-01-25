@@ -260,8 +260,10 @@ const MutationType = new GraphQLObjectType({
             .findOne({
               include: [
                 {
+
                   model: Db.models.employee,
                   where: { id: args.employeeId }
+
                 }
               ],
               where: { id: args.serviceShiftId }
