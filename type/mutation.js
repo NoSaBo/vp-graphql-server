@@ -274,7 +274,7 @@ const MutationType = new GraphQLObjectType({
             type: GraphQLString
           },
           values: {
-            type: new GraphQLList(GraphQLString)
+            type: GraphQLString
           },
           comment: {
             type: GraphQLString
@@ -286,10 +286,13 @@ const MutationType = new GraphQLObjectType({
             type: GraphQLString
           },
           token: {
-            type: GraphQLString
+            type: new GraphQLNonNull(GraphQLString)
           },
           returned: {
-            type: GraphQLBoolean
+            type: new GraphQLNonNull(GraphQLBoolean)
+          },
+          serviceshiftId: {
+            type: new GraphQLNonNull(GraphQLID)
           }
         },
         resolve(root, args) {
@@ -301,7 +304,8 @@ const MutationType = new GraphQLObjectType({
             damage: args.damage,
             sign: args.sign,
             token: args.token,
-            returned: false
+            returned: false,
+            serviceshiftId: args.serviceshiftId
           });
         }
       },
