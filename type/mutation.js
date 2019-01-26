@@ -197,6 +197,48 @@ const MutationType = new GraphQLObjectType({
             });
         }
       },
+      updateBranch: {
+        type: Branch,
+        args: {
+          id: {
+            type: new GraphQLNonNull(GraphQLID)
+          },
+          branch: {
+            type: GraphQLString
+          },
+          address: {
+            type: GraphQLString
+          },
+          latitude: {
+            type: GraphQLFloat
+          },
+          longitude: {
+            type: GraphQLFloat
+          },
+          contact: {
+            type: GraphQLString
+          },
+          phone: {
+            type: GraphQLString
+          },
+          active: {
+            type: GraphQLBoolean
+          }
+        },
+        resolve(roots, args) {
+          console.log("***********");
+          return Db.models.branch
+            .findOne({ where: { id: args.id } })
+            .then(result => {
+              console.log("result", result);
+              return result
+                .update(args, { returning: true })
+                .then(updatedresult => {
+                  return updatedresult;
+                });
+            });
+        }
+      },
       updateServiceShift: {
         type: ServiceShift,
         args: {
