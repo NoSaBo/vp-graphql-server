@@ -18,6 +18,7 @@ import Employee from "../model/employee";
 import Branch from "../model/branch";
 import ServiceShift from "../model/service-shift";
 import EmployeexServiceShifts from "../model/employee-x-service-shift";
+import Admin from "../model/admin";
 
 import Db from "../conn/db";
 
@@ -26,6 +27,28 @@ const MutationType = new GraphQLObjectType({
   description: "Funtions to create data",
   fields() {
     return {
+      signup: {
+        type: Admin,
+        args: {
+          name: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          email: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          password: {
+            type: new GraphQLNonNull(GraphQLString)
+          }
+        },
+        resolve(root, args) {
+          return Db.models.admin.create({
+            name: args.name,
+            email: args.email,
+            password: args.password,
+            token: "eltoken"
+          });
+        }
+      },
       addEmployee: {
         type: Employee,
         args: {

@@ -10,6 +10,7 @@ import BranchModel from "./branch";
 import ServiceShiftModel from "./service-shift";
 import EmployeeXServiceShiftModel from "./employee-x-service-shift";
 import ParkingModel from "./parking";
+import AdminModel from "./admin";
 import { dirname } from "path";
 
 const conn = new Sequelize(
@@ -34,6 +35,7 @@ const EmployeeXServiceShift = conn.define(
   EmployeeXServiceShiftModel
 );
 const Parking = conn.define("parking", ParkingModel);
+const Admin = conn.define("admin", AdminModel);
 
 // Relationships
 Branch.hasMany(ServiceShift);
