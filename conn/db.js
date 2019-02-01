@@ -30,12 +30,13 @@ const conn = new Sequelize(
 const Employee = conn.define("employee", EmployeeModel);
 const Branch = conn.define("branch", BranchModel);
 const ServiceShift = conn.define("serviceshift", ServiceShiftModel);
-const EmployeeXServiceShift = conn.define(
-  "employeexserviceshift",
-  EmployeeXServiceShiftModel
-);
+const EmployeeXServiceShift = conn.define("employeexserviceshift", EmployeeXServiceShiftModel);
 const Parking = conn.define("parking", ParkingModel);
 const Admin = conn.define("admin", AdminModel);
+
+export const models = {};
+models.sequelize = conn;
+models.Sequelize = Sequelize;
 
 // Relationships
 Branch.hasMany(ServiceShift);

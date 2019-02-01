@@ -8,16 +8,31 @@ const AdminModel = {
     defaultValue: Sequelize.UUIDV1,
     primaryKey: true
   },
-  name: {
-    type: Sequelize.STRING
-  },
-  password: {
-    type: Sequelize.STRING
+  username: {
+    type: Sequelize.STRING,
+    unique: true,
+    validate: {
+      isAlphanumeric: {
+        args: true,
+        msg: "El nombre de usuario solo puede contener letras y números"
+      },
+      len: {
+        args: [5, 10],
+        msg: "El nombre de usuario debe tener entre 5 y 10 caracteres"
+      }
+    }
   },
   email: {
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
+    unique: true,
+    validate: {
+      isEmail: {
+        args: true,
+        msg: "Cuenta de correo inválida"
+      }
+    }
   },
-  token: {
+  password: {
     type: Sequelize.STRING
   }
 };

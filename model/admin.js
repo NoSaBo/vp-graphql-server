@@ -13,10 +13,10 @@ const Admin = new GraphQLObjectType({
           return admin.id;
         }
       },
-      name: {
+      username: {
         type: GraphQLString,
         resolve(admin) {
-          return admin.name;
+          return admin.username;
         }
       },
       email: {
@@ -30,12 +30,6 @@ const Admin = new GraphQLObjectType({
         type: GraphQLString,
         resolve(admin) {
           return admin.password;
-        }
-      },
-      token: {
-        type: GraphQLString,
-        resolve(admin) {
-          return admin.token;
         }
       }
     };

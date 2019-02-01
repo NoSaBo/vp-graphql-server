@@ -13,24 +13,34 @@ import {
 } from "graphql";
 import { GraphQLDateTime, GraphQLTime } from "graphql-iso-date";
 import * as bcrypt from "bcrypt";
+import _ from "lodash";
 
 import Employee from "../model/employee";
 import Branch from "../model/branch";
 import ServiceShift from "../model/service-shift";
 import EmployeexServiceShifts from "../model/employee-x-service-shift";
 import Admin from "../model/admin";
+import RegisterResponse from "../model/RegisterResponse";
 
 import Db from "../conn/db";
+import { models } from "../conn/db";
+
+const formatErrors = (e, models) => {
+  if (e instanceof models.sequelize.ValidationError) {
+    return e.errors.map(x => _.pick(x, ["path", "message"]));
+  }
+  return [{ path: "name", message: "something went wrong" }];
+};
 
 const MutationType = new GraphQLObjectType({
   name: "MutationType",
   description: "Funtions to create data",
   fields() {
     return {
-      signup: {
-        type: Admin,
+      addRegistry: {
+        type: RegisterResponse,
         args: {
-          name: {
+          username: {
             type: new GraphQLNonNull(GraphQLString)
           },
           email: {
@@ -40,13 +50,39 @@ const MutationType = new GraphQLObjectType({
             type: new GraphQLNonNull(GraphQLString)
           }
         },
-        resolve(root, args) {
-          return Db.models.admin.create({
-            name: args.name,
-            email: args.email,
-            password: args.password,
-            token: "eltoken"
-          });
+        async resolve(root, args) {
+          try {
+            if (args.password.length < 5 || args.password.length > 10) {
+              return {
+                ok: false,
+                errors: [
+                  {
+                    path: "password",
+                    message:
+                      "La contraseña debe de tener entre 5 y 10 caracteres"
+                  }
+                ]
+              };
+            }
+            const saltRounds = 10;
+            const salt = bcrypt.genSaltSync(saltRounds);
+            const hash = bcrypt.hashSync(args.password, salt);
+            const admin = await Db.models.admin.create({
+              username: args.username,
+              email: args.email,
+              password: hash
+            });
+            return {
+              ok: true,
+              admin
+            };
+          } catch (err) {
+            const a = formatErrors(err, models);
+            return {
+              ok: false,
+              errors: formatErrors(err, models)
+            };
+          }
         }
       },
       addEmployee: {
@@ -323,10 +359,8 @@ const MutationType = new GraphQLObjectType({
             .findOne({
               include: [
                 {
-
                   model: Db.models.employee,
                   where: { id: args.employeeId }
-
                 }
               ],
               where: { id: args.serviceShiftId }
