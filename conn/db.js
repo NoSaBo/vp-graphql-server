@@ -44,7 +44,9 @@ ServiceShift.belongsToMany(Employee, { through: EmployeeXServiceShift });
 // Employee.hasMany(EmployeeXServiceShift);
 // ServiceShift.belongsToMany(EmployeeXServiceShift);
 
+//serviceshift_id -> parking
 ServiceShift.hasMany(Parking);
+//parking_id -> serciceshift
 Parking.belongsTo(ServiceShift);
 
 conn.sync({ force: false }).then(() => {
