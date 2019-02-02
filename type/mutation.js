@@ -21,9 +21,14 @@ import ServiceShift from "../model/service-shift";
 import EmployeexServiceShifts from "../model/employee-x-service-shift";
 import Admin from "../model/admin";
 import RegisterResponse from "../model/RegisterResponse";
+import LoginResponse from "../model/LoginResponse";
 
 import Db from "../conn/db";
 import { models } from "../conn/db";
+import { tryLogin } from "../auth";
+
+import  requiresAuth from "../permissions";
+
 
 const formatErrors = (e, models) => {
   if (e instanceof models.sequelize.ValidationError) {
@@ -37,6 +42,20 @@ const MutationType = new GraphQLObjectType({
   description: "Funtions to create data",
   fields() {
     return {
+      login: {
+        type: LoginResponse,
+        args: {
+          email: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          password: {
+            type: new GraphQLNonNull(GraphQLString)
+          }
+        },
+        resolve(root, { email, password }, { SECRET, SECRET2 }) {
+          return tryLogin(email, password, Db.models, SECRET, SECRET2 );
+        }
+      },
       addRegistry: {
         type: RegisterResponse,
         args: {
@@ -52,32 +71,12 @@ const MutationType = new GraphQLObjectType({
         },
         async resolve(root, args) {
           try {
-            if (args.password.length < 5 || args.password.length > 10) {
-              return {
-                ok: false,
-                errors: [
-                  {
-                    path: "password",
-                    message:
-                      "La contraseña debe de tener entre 5 y 10 caracteres"
-                  }
-                ]
-              };
-            }
-            const saltRounds = 10;
-            const salt = bcrypt.genSaltSync(saltRounds);
-            const hash = bcrypt.hashSync(args.password, salt);
-            const admin = await Db.models.admin.create({
-              username: args.username,
-              email: args.email,
-              password: hash
-            });
+            const admin = await Db.models.admin.create(args);
             return {
               ok: true,
               admin
             };
           } catch (err) {
-            const a = formatErrors(err, models);
             return {
               ok: false,
               errors: formatErrors(err, models)

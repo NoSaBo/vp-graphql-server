@@ -1,6 +1,7 @@
 /* @flow */
 
 import Sequelize from "sequelize";
+import * as bcrypt from "bcrypt";
 
 const AdminModel = {
   id: {
@@ -33,8 +34,15 @@ const AdminModel = {
     }
   },
   password: {
-    type: Sequelize.STRING
-  }
+    type: Sequelize.STRING,
+    validate: {
+      len: {
+        args: [5, 10],
+        msg: 'La contraseña debe de tener entre 5 y 10 caracteres"'
+      }
+    }
+  },
 };
+
 
 export default AdminModel;

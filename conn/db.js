@@ -30,9 +30,21 @@ const conn = new Sequelize(
 const Employee = conn.define("employee", EmployeeModel);
 const Branch = conn.define("branch", BranchModel);
 const ServiceShift = conn.define("serviceshift", ServiceShiftModel);
-const EmployeeXServiceShift = conn.define("employeexserviceshift", EmployeeXServiceShiftModel);
+const EmployeeXServiceShift = conn.define(
+  "employeexserviceshift",
+  EmployeeXServiceShiftModel
+);
 const Parking = conn.define("parking", ParkingModel);
-const Admin = conn.define("admin", AdminModel);
+const Admin = conn.define("admin", AdminModel, {
+  hooks: {
+    afterValidate: async admin => {
+      const saltRounds = 10;
+      const salt = bcrypt.genSaltSync(saltRounds);
+      const hashedPassword = await bcrypt.hashSync(admin.password, salt);
+      admin.password = hashedPassword;
+    }
+  }
+});
 
 export const models = {};
 models.sequelize = conn;

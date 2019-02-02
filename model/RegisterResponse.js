@@ -1,6 +1,6 @@
 /* @flow */
 
-import { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLBoolean, GraphQLList } from "graphql";
+import { GraphQLObjectType, GraphQLBoolean, GraphQLList } from "graphql";
 import Admin from './admin';
 import Error from './error';
 
