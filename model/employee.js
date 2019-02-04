@@ -13,6 +13,7 @@ import {
 
 import Branch from "./branch";
 import ServiceShift from "./service-shift";
+import Error from './error';
 
 import Db from "../conn/db";
 import EmployeeXServiceShift from "./employee-x-service-shift";
@@ -70,6 +71,18 @@ const Employee = new GraphQLObjectType({
         type: GraphQLBoolean,
         resolve(employee) {
           return employee.active;
+        }
+      },
+      ok: {
+        type: GraphQLBoolean,
+        resolve(logresp) {
+          return logresp.ok;
+        }
+      },
+      errors: {
+        type: new GraphQLList(Error),
+        resolve(logresp) {
+          return logresp.errors
         }
       },
       shifts: {

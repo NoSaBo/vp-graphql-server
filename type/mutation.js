@@ -26,9 +26,7 @@ import LoginResponse from "../model/LoginResponse";
 import Db from "../conn/db";
 import { models } from "../conn/db";
 import { tryLogin } from "../auth";
-
-import  requiresAuth from "../permissions";
-
+import requiresAuth from "../permissions";
 
 const formatErrors = (e, models) => {
   if (e instanceof models.sequelize.ValidationError) {
@@ -53,7 +51,7 @@ const MutationType = new GraphQLObjectType({
           }
         },
         resolve(root, { email, password }, { SECRET, SECRET2 }) {
-          return tryLogin(email, password, Db.models, SECRET, SECRET2 );
+          return tryLogin(email, password, Db.models, SECRET, SECRET2);
         }
       },
       addRegistry: {
@@ -109,21 +107,48 @@ const MutationType = new GraphQLObjectType({
             type: new GraphQLNonNull(GraphQLBoolean)
           }
         },
-        resolve(root, args) {
-          const saltRounds = 10;
-          const salt = bcrypt.genSaltSync(saltRounds);
-          const hash = bcrypt.hashSync(args.password, salt);
+        resolve: requiresAuth.createResolver(async (root, args) => {
+          try {
+            const saltRounds = 10;
+            const salt = bcrypt.genSaltSync(saltRounds);
+            const hash = bcrypt.hashSync(args.password, salt);
 
-          return Db.models.employee.create({
-            firstname: args.firstname,
-            lastname: args.lastname,
-            user: args.user.toLowerCase(),
-            password: hash,
-            dni: args.dni,
-            phone: args.phone,
-            active: args.active
-          });
+            await Db.models.employee.create({
+              firstname: args.firstname,
+              lastname: args.lastname,
+              user: args.user.toLowerCase(),
+              password: hash,
+              dni: args.dni,
+              phone: args.phone,
+              active: args.active
+            });
+            return {
+              ok: true
+            }
+          } catch (err) {
+            console.log("err", err);
+            return {
+              ok: false,
+              errors: formatErrors(err)
+            };
         }
+        })
+
+        // resolve: (root, args) => {
+        //   const saltRounds = 10;
+        //   const salt = bcrypt.genSaltSync(saltRounds);
+        //   const hash = bcrypt.hashSync(args.password, salt);
+
+        //   return Db.models.employee.create({
+        //     firstname: args.firstname,
+        //     lastname: args.lastname,
+        //     user: args.user.toLowerCase(),
+        //     password: hash,
+        //     dni: args.dni,
+        //     phone: args.phone,
+        //     active: args.active
+        //   });
+        // }
       },
       addBranch: {
         type: Branch,

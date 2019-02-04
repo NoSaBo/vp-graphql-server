@@ -1,5 +1,5 @@
 const createResolver = (resolver) => {
-    const baseResolver = resolver;
+  const baseResolver = resolver;
     baseResolver.createResolver = (childResolver) => {
       const newResolver = async (parent, args, context, info) => {
         await resolver(parent, args, context, info);
@@ -10,8 +10,8 @@ const createResolver = (resolver) => {
     return baseResolver;
   };
   
-  export default createResolver((parent, args, { user }) => {
-    if (!user || !user.id) {
+  export default createResolver((parent, args, context) => {
+    if (!context.user || !context.user.id) {
       throw new Error('Not authenticated');
     }
   });

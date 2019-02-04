@@ -4,7 +4,7 @@ import express from "express";
 import expressGraphQL from "express-graphql";
 import schema from "./schema";
 import cors from "cors";
-import permissions from "./permissions";
+// import permissions from "./permissions";
 
 const SECRET = "234l90fasdf23e";
 const SECRET2 = "234l90fasdf23elkj34jl34";
