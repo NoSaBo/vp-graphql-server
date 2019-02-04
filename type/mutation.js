@@ -18,6 +18,7 @@ import _ from "lodash";
 import Employee from "../model/employee";
 import Branch from "../model/branch";
 import ServiceShift from "../model/service-shift";
+import Parking from "../model/parking";
 import EmployeexServiceShifts from "../model/employee-x-service-shift";
 import Admin from "../model/admin";
 import RegisterResponse from "../model/RegisterResponse";
@@ -212,6 +213,48 @@ const MutationType = new GraphQLObjectType({
           });
         }
       },
+      addParking: {
+        type: Parking,
+        args: {
+          plate: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          owner: {
+            type: GraphQLString
+          },
+          values: {
+            type: GraphQLList(GraphQLString)
+          },
+          comment: {
+            type: GraphQLString
+          },
+          damage: {
+            type: GraphQLString
+          },
+          sign: {
+            type: GraphQLString
+          },
+          token: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          serviceshiftId: {
+            type: new GraphQLNonNull(GraphQLID)
+          }
+        },
+        resolve(root, args) {
+          return Db.models.parking.create({
+            plate: args.plate,
+            owner: args.owner,
+            values: args.values,
+            comment: args.comment,
+            damage: args.damage,
+            sign: args.sign,
+            token: args.token,
+            returned: false,
+            serviceshiftId: args.serviceshiftId
+          });
+        }
+      },
       addEmployeeToServiceShift: {
         type: ServiceShift,
         args: {
@@ -368,9 +411,9 @@ const MutationType = new GraphQLObjectType({
           comment: {
             type: new GraphQLNonNull(GraphQLString)
           },
-          start: {
-            type: new GraphQLNonNull(GraphQLDateTime)
-          },
+          // start: {
+          //   type: new GraphQLNonNull(GraphQLDateTime)
+          // },
           employeeId: {
             type: new GraphQLNonNull(GraphQLID)
           },
@@ -393,15 +436,35 @@ const MutationType = new GraphQLObjectType({
               Db.models.employee
                 .findOne({ where: { id: args.employeeId } })
                 .then(employee => {
+                  const nowIso = new Date().toISOString();
                   serviceshift.addEmployees(employee, {
                     through: {
                       photo: args.photo,
                       latitude: args.latitude,
                       longitude: args.longitude,
                       comment: args.comment,
-                      start: args.start
+                      start: nowIso
                     }
                   });
+                });
+            });
+        }
+      },
+      returnParking: {
+        type: Parking,
+        args: {
+          id: {
+            type: new GraphQLNonNull(GraphQLID)
+          }
+        },
+        resolve(roots, args) {
+          return Db.models.parking
+            .findOne({ where: { id: args.id } })
+            .then(result => {
+              return result
+                .update({ returned: true }, { returning: true })
+                .then(updatedresult => {
+                  return updatedresult;
                 });
             });
         }

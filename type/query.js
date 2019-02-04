@@ -6,6 +6,7 @@ import {
   GraphQLString,
   GraphQLInt,
   GraphQLSchema,
+  GraphQLBoolean,
   GraphQLList,
   GraphQLNonNull
 } from "graphql";
@@ -92,7 +93,7 @@ const QueryType = new GraphQLObjectType({
             type: GraphQLString
           }
         },
-        resolve(parent, args) {
+        resolve(root, args) {
           return Db.models.employee.findAll({ where: args });
         }
       },
@@ -114,23 +115,21 @@ const QueryType = new GraphQLObjectType({
         args: {
           id: {
             type: GraphQLID
-          }
-        },
-        resolve(root, args) {
-          return Db.models.parking.findAll({ where: args });
-        }
-      },
-      parkings: {
-        type: new GraphQLList(Parking),
-        args: {
-          id: {
+          },
+          token: {
+            type: GraphQLString
+          },
+          returned: {
+            type: GraphQLBoolean
+          },
+          serviceshiftId: {
             type: GraphQLID
           }
         },
         resolve(root, args) {
           return Db.models.parking.findAll({ where: args });
         }
-      },
+      }
     };
   }
 });
