@@ -474,6 +474,26 @@ const MutationType = new GraphQLObjectType({
             });
         }
       },
+      deleteParking: {
+        type: Parking,
+        args: {
+          id: {
+            type: new GraphQLNonNull(GraphQLID)
+          }
+        },
+        resolve(parent, args) {
+          return Db.models.parking
+            .findOne({ where: { id: args.id } })
+            .then(result => {
+              Db.models.parking.destroy({
+                where: {
+                  id: args.id
+                }
+              });
+              return result;
+            });
+        }
+      },
       deleteEmployeexserviceshift: {
         type: ServiceShift,
         args: {
