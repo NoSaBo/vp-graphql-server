@@ -473,6 +473,32 @@ const MutationType = new GraphQLObjectType({
               return Db.models.serviceshift.findOne({ where: { id: args.id } });
             });
         }
+      },
+      deleteEmployeexserviceshift: {
+        type: ServiceShift,
+        args: {
+          id: {
+            type: GraphQLID
+          },
+          employeeId: {
+            type: GraphQLID
+          }
+        },
+        resolve(root, args) {
+          return Db.models.serviceshift
+            .findOne({
+              include: [
+                {
+                  model: Db.models.employee,
+                  where: { id: args.employeeId }
+                }
+              ],
+              where: { id: args.id }
+            })
+            .then(result => {
+              return result.employees[0].employeexserviceshift.destroy();
+            });
+        }
       }
     };
   }
