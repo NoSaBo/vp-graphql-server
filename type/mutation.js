@@ -122,12 +122,16 @@ const MutationType = new GraphQLObjectType({
           }
         },
         resolve(root, args) {
-          return Db.models.serviceshift.create({
-            begindate: args.begindate,
-            workspan: args.workspan,
-            active: args.active,
-            branchId: args.branchId
-          });
+          try {
+            return Db.models.serviceshift.create({
+              begindate: args.begindate,
+              workspan: args.workspan,
+              active: args.active,
+              branchId: args.branchId
+            });
+          } catch (error) {
+            console.log("error: ", error);
+          }
         }
       },
       addParking: {
@@ -269,7 +273,6 @@ const MutationType = new GraphQLObjectType({
           }
         },
         resolve(roots, args) {
-          console.log("***********");
           return Db.models.branch
             .findOne({ where: { id: args.id } })
             .then(result => {
@@ -403,6 +406,26 @@ const MutationType = new GraphQLObjectType({
                 }
               });
               return result;
+            });
+        }
+      },
+      disableEmployee: {
+        type: Employee,
+        args: {
+          user: {
+            type: GraphQLString
+          }
+        },
+        resolve(roots, args) {
+          args.active = false;
+          return Db.models.employee
+            .findOne({ where: { user: args.user } })
+            .then(result => {
+              return result
+                .update(args, { returning: true })
+                .then(updatedresult => {
+                  return updatedresult;
+                });
             });
         }
       },
