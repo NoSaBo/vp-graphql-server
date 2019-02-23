@@ -12,6 +12,12 @@ import {
   GraphQLBoolean
 } from "graphql";
 
+import {
+  GraphQLDate,
+  GraphQLTime,
+  GraphQLDateTime
+} from 'graphql-iso-date';
+
 import Employee from "./employee";
 import ServiceShift from "./service-shift";
 
@@ -68,6 +74,18 @@ const Parking = new GraphQLObjectType({
         type: GraphQLString,
         resolve(parking) {
           return parking.token;
+        }
+      },
+      createdAt: {
+        type: GraphQLDateTime,
+        resolve(parking) {
+          return parking.createdAt;
+        }
+      },
+      updatedAt: {
+        type: GraphQLDateTime,
+        resolve(parking) {
+          return parking.updatedAt;
         }
       },
       serviceshift: {
