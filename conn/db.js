@@ -49,7 +49,13 @@ ServiceShift.hasMany(Parking);
 //parking_id -> serciceshift
 Parking.belongsTo(ServiceShift);
 
-conn.sync({ force: false }).then(() => {
+//employee_id -> parking
+Employee.hasMany(Parking);
+//parking_id -> employee
+Parking.belongsTo(Employee);
+
+
+conn.sync({ force: true }).then(() => {
   // _.times(4, () => {
   //   return Employee.create({
   //     firstName: Faker.name.firstName(),
