@@ -55,7 +55,7 @@ Employee.hasMany(Parking);
 Parking.belongsTo(Employee);
 
 
-conn.sync({ force: true }).then(() => {
+conn.sync({ force: false }).then(() => {
   // _.times(4, () => {
   //   return Employee.create({
   //     firstName: Faker.name.firstName(),
