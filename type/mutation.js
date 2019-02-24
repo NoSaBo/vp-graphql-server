@@ -160,6 +160,9 @@ const MutationType = new GraphQLObjectType({
           },
           serviceshiftId: {
             type: new GraphQLNonNull(GraphQLID)
+          },
+          employeeId: {
+            type: new GraphQLNonNull(GraphQLID)
           }
         },
         resolve(root, args) {
@@ -172,7 +175,8 @@ const MutationType = new GraphQLObjectType({
             sign: args.sign,
             token: args.token,
             returned: false,
-            serviceshiftId: args.serviceshiftId
+            serviceshiftId: args.serviceshiftId,
+            employeeId: args.employeeId
           });
         }
       },

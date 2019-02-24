@@ -99,6 +99,12 @@ const Parking = new GraphQLObjectType({
         resolve(parking) {
           return parking.returned;
         }
+      },
+      employee: {
+        type: Employee,
+        resolve(parking) {
+          return parking.getEmployee();
+        }
       }
     };
   }
