@@ -24,29 +24,6 @@ const QueryType = new GraphQLObjectType({
   name: "QueryType",
   fields: () => {
     return {
-      login: {
-        type: Employee,
-        args: {
-          user: {
-            type: new GraphQLNonNull(GraphQLString)
-          },
-          password: {
-            type: new GraphQLNonNull(GraphQLString)
-          }
-        },
-        resolve(root, args) {
-          return Db.models.employee
-            .findOne({ where: { user: args.user } })
-            .then(user => {
-              if (
-                user &&
-                bcrypt.compareSync(args.password, user.get().password)
-              )
-                return user;
-              else return null;
-            });
-        }
-      },
       serviceShifts: {
         type: new GraphQLList(ServiceShift),
         args: {

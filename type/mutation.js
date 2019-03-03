@@ -30,6 +30,7 @@ import { tryLogin } from "../auth";
 import requiresAuth from "../permissions";
 
 const formatErrors = (e, models) => {
+  console.log("models", models);
   if (e instanceof models.sequelize.ValidationError) {
     return e.errors.map(x => _.pick(x, ["path", "message"]));
   }
@@ -205,12 +206,16 @@ const MutationType = new GraphQLObjectType({
           }
         },
         resolve(root, args) {
-          return Db.models.serviceshift.create({
-            begindate: args.begindate,
-            workspan: args.workspan,
-            active: args.active,
-            branchId: args.branchId
-          });
+          try {
+            return Db.models.serviceshift.create({
+              begindate: args.begindate,
+              workspan: args.workspan,
+              active: args.active,
+              branchId: args.branchId
+            });
+          } catch (error) {
+            console.log("error: ", error);
+          }
         }
       },
       addParking: {
@@ -239,6 +244,9 @@ const MutationType = new GraphQLObjectType({
           },
           serviceshiftId: {
             type: new GraphQLNonNull(GraphQLID)
+          },
+          employeeId: {
+            type: new GraphQLNonNull(GraphQLID)
           }
         },
         resolve(root, args) {
@@ -251,7 +259,8 @@ const MutationType = new GraphQLObjectType({
             sign: args.sign,
             token: args.token,
             returned: false,
-            serviceshiftId: args.serviceshiftId
+            serviceshiftId: args.serviceshiftId,
+            employeeId: args.employeeId
           });
         }
       },
@@ -352,7 +361,6 @@ const MutationType = new GraphQLObjectType({
           }
         },
         resolve(roots, args) {
-          console.log("***********");
           return Db.models.branch
             .findOne({ where: { id: args.id } })
             .then(result => {
@@ -489,6 +497,26 @@ const MutationType = new GraphQLObjectType({
             });
         }
       },
+      disableEmployee: {
+        type: Employee,
+        args: {
+          user: {
+            type: GraphQLString
+          }
+        },
+        resolve(roots, args) {
+          args.active = false;
+          return Db.models.employee
+            .findOne({ where: { user: args.user } })
+            .then(result => {
+              return result
+                .update(args, { returning: true })
+                .then(updatedresult => {
+                  return updatedresult;
+                });
+            });
+        }
+      },
       deleteBranch: {
         type: Branch,
         args: {
@@ -554,6 +582,52 @@ const MutationType = new GraphQLObjectType({
             })
             .then(() => {
               return Db.models.serviceshift.findOne({ where: { id: args.id } });
+            });
+        }
+      },
+      deleteParking: {
+        type: Parking,
+        args: {
+          id: {
+            type: new GraphQLNonNull(GraphQLID)
+          }
+        },
+        resolve(parent, args) {
+          return Db.models.parking
+            .findOne({ where: { id: args.id } })
+            .then(result => {
+              Db.models.parking.destroy({
+                where: {
+                  id: args.id
+                }
+              });
+              return result;
+            });
+        }
+      },
+      deleteEmployeexserviceshift: {
+        type: ServiceShift,
+        args: {
+          id: {
+            type: GraphQLID
+          },
+          employeeId: {
+            type: GraphQLID
+          }
+        },
+        resolve(root, args) {
+          return Db.models.serviceshift
+            .findOne({
+              include: [
+                {
+                  model: Db.models.employee,
+                  where: { id: args.employeeId }
+                }
+              ],
+              where: { id: args.id }
+            })
+            .then(result => {
+              return result.employees[0].employeexserviceshift.destroy();
             });
         }
       }
