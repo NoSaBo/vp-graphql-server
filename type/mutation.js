@@ -30,7 +30,6 @@ import { tryLogin } from "../auth";
 import requiresAuth from "../permissions";
 
 const formatErrors = (e, models) => {
-  console.log("models", models);
   if (e instanceof models.sequelize.ValidationError) {
     return e.errors.map(x => _.pick(x, ["path", "message"]));
   }
@@ -110,6 +109,7 @@ const MutationType = new GraphQLObjectType({
           }
         },
         resolve: requiresAuth.createResolver(async (root, args) => {
+          console.log("inside auth mututation");
           try {
             const saltRounds = 10;
             const salt = bcrypt.genSaltSync(saltRounds);
@@ -124,6 +124,7 @@ const MutationType = new GraphQLObjectType({
               phone: args.phone,
               active: args.active
             });
+            console.log("success");
             return {
               ok: true
             }

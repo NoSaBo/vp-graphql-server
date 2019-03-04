@@ -18,8 +18,8 @@ const AdminModel = {
         msg: "El nombre de usuario solo puede contener letras y números"
       },
       len: {
-        args: [5, 10],
-        msg: "El nombre de usuario debe tener entre 5 y 10 caracteres"
+        args: [4, 11],
+        msg: "El nombre de usuario debe tener entre 5 y 10 caracteres (test)"
       }
     }
   },

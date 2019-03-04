@@ -20,15 +20,16 @@ app.use(cors());
 
 app.use(
   "/graphql",
-  expressGraphQL({
+  expressGraphQL(req => ({
     schema: schema,
     pretty: true,
     graphiql: true,
     context: {
       SECRET,
-      SECRET2
+      SECRET2,
+      user: req
     }
-  })
+  })),
 );
 
 app.listen(port, () => {
