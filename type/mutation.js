@@ -75,11 +75,13 @@ const MutationType = new GraphQLObjectType({
             type: new GraphQLNonNull(GraphQLBoolean)
           }
         },
-        resolve(root, args) {
+        resolve(root, args, req) {
           const saltRounds = 10;
           const salt = bcrypt.genSaltSync(saltRounds);
           const hash = bcrypt.hashSync(args.password, salt);
-
+          if (!req.isAuth) {
+            throw new Error(`No cuenta con permisos de 'super admin'`);
+          }
           return Db.models.employee.create({
             firstname: args.firstname,
             lastname: args.lastname,

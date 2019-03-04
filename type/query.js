@@ -17,6 +17,8 @@ import Branch from "../model/branch";
 import ServiceShift from "../model/service-shift";
 import Employeesxserviceshifts from "../model/employee-x-service-shift";
 import Parking from "../model/parking";
+import WebLogin from "../model/webLogin";
+import jwt from "jsonwebtoken";
 
 import Db from "../conn/db";
 
@@ -105,6 +107,33 @@ const QueryType = new GraphQLObjectType({
         },
         resolve(root, args) {
           return Db.models.parking.findAll({ where: args });
+        }
+      },
+      webLogin: {
+        type: WebLogin,
+        args: {
+          email: {
+            type: GraphQLString
+          },
+          password: {
+            type: GraphQLString
+          }
+        },
+        async resolve(root, { email, password }) {
+          const user = await Db.models.admin.findOne({where: { email: email }});
+          if (!user) {
+            throw new Error("El administrador no existe");
+          }
+          const isEqual = await bcrypt.compare(password, user.password);
+          if (!isEqual) {
+            throw new Error("La contraseña es incorrecta");
+          }
+          const token = jwt.sign(
+            { userId: user.id, email: user.email },
+            "somesupersecretkey",
+            { expiresIn: "1h" }
+          );
+          return {userID: user.id, user: user.username, token: token, tokenExpiration: 1}
         }
       }
     };
