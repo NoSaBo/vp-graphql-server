@@ -498,18 +498,58 @@ const MutationType = new GraphQLObjectType({
             });
         }
       },
+      disableBranch: {
+        type: Branch,
+        args: {
+          id: {
+            type: new GraphQLNonNull(GraphQLID)
+          }
+        },
+        resolve(roots, args) {
+          return Db.models.branch
+            .findOne({ where: { id: args.id } })
+            .then(result => {
+              args.active = !result.dataValues.active;
+              return result
+                .update(args, { returning: true })
+                .then(updatedresult => {
+                  return updatedresult;
+                });
+            });
+        }
+      },
       disableEmployee: {
         type: Employee,
         args: {
           user: {
-            type: GraphQLString
+            type: new GraphQLNonNull(GraphQLString)
           }
         },
         resolve(roots, args) {
-          args.active = false;
           return Db.models.employee
             .findOne({ where: { user: args.user } })
             .then(result => {
+              args.active = !result.dataValues.active;
+              return result
+                .update(args, { returning: true })
+                .then(updatedresult => {
+                  return updatedresult;
+                });
+            });
+        }
+      },
+      disableServiceshift: {
+        type: ServiceShift,
+        args: {
+          id: {
+            type: new GraphQLNonNull(GraphQLID)
+          }
+        },
+        resolve(roots, args) {
+          return Db.models.serviceshift
+            .findOne({ where: { id: args.id } })
+            .then(result => {
+              args.active = !result.dataValues.active;
               return result
                 .update(args, { returning: true })
                 .then(updatedresult => {
