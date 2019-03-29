@@ -27,7 +27,7 @@ import LoginResponse from "../model/LoginResponse";
 import Db from "../conn/db";
 import { models } from "../conn/db";
 import { tryLogin } from "../auth";
-import requiresAuth from "../permissions";
+// import requiresAuth from "../permissions";
 
 const formatErrors = (e, models) => {
   if (e instanceof models.sequelize.ValidationError) {
@@ -44,19 +44,88 @@ const MutationType = new GraphQLObjectType({
       login: {
         type: LoginResponse,
         args: {
-          email: {
+          username: {
             type: new GraphQLNonNull(GraphQLString)
           },
           password: {
             type: new GraphQLNonNull(GraphQLString)
           }
         },
-        resolve(root, { email, password }, { SECRET, SECRET2 }) {
-          return tryLogin(email, password, Db.models, SECRET, SECRET2);
+        resolve(root, { username, password }, { SECRET, SECRET2 }) {
+          return tryLogin(username, password, Db.models, SECRET, SECRET2);
         }
       },
-      addRegistry: {
-        type: RegisterResponse,
+      // addRegistry: {
+      //   type: RegisterResponse,
+      //   args: {
+      //     username: {
+      //       type: new GraphQLNonNull(GraphQLString)
+      //     },
+      //     email: {
+      //       type: new GraphQLNonNull(GraphQLString)
+      //     },
+      //     password: {
+      //       type: new GraphQLNonNull(GraphQLString)
+      //     }
+      //   },
+      //   async resolve(root, args) {
+      //     const saltRounds = 10;
+      //     const salt = bcrypt.genSaltSync(saltRounds);
+      //     const hash = bcrypt.hashSync(args.password, salt);
+      //     console.log("hash-admin", hash);
+      //     try {
+      //       const admin = await Db.models.admin.create(args);
+      //       return {
+      //         ok: true,
+      //         admin
+      //       };
+      //     } catch (err) {
+      //       return {
+      //         ok: false,
+      //         errors: formatErrors(err, models)
+      //       };
+      //     }
+      //   }
+      // },
+      // addRegistry: {
+      //   type: RegisterResponse,
+      //   args: {
+      //     username: {
+      //       type: new GraphQLNonNull(GraphQLString)
+      //     },
+      //     email: {
+      //       type: new GraphQLNonNull(GraphQLString)
+      //     },
+      //     password: {
+      //       type: new GraphQLNonNull(GraphQLString)
+      //     }
+      //   },
+      //   resolve: (root, args) => {
+      //     const saltRounds = 10;
+      //     const salt = bcrypt.genSaltSync(saltRounds);
+      //     console.log("password-admin", args.password);
+      //     const hash = bcrypt.hashSync(args.password, salt);
+      //     console.log("hash-admin", hash);
+      //     try {
+      //       const admin = Db.models.admin.create({
+      //         username: args.username,
+      //         email: args.email,
+      //         password: hash
+      //       });
+      //       return {
+      //         ok: true,
+      //         admin
+      //       };
+      //     } catch (err) {
+      //       return {
+      //         ok: false,
+      //         errors: formatErrors(err, models)
+      //       };
+      //     }
+      //   }
+      // },
+      addAdmin: {
+        type: Admin,
         args: {
           username: {
             type: new GraphQLNonNull(GraphQLString)
@@ -68,19 +137,16 @@ const MutationType = new GraphQLObjectType({
             type: new GraphQLNonNull(GraphQLString)
           }
         },
-        async resolve(root, args) {
-          try {
-            const admin = await Db.models.admin.create(args);
-            return {
-              ok: true,
-              admin
-            };
-          } catch (err) {
-            return {
-              ok: false,
-              errors: formatErrors(err, models)
-            };
-          }
+        resolve: (root, args) => {
+          const saltRounds = 10;
+          const salt = bcrypt.genSaltSync(saltRounds);
+          const hash = bcrypt.hashSync(args.password, salt);
+          console.log("hash-admin", hash, args.password);
+          return Db.models.admin.create({
+            username: args.username,
+            email: args.email,
+            password: hash,
+          });
         }
       },
       addEmployee: {
@@ -108,50 +174,21 @@ const MutationType = new GraphQLObjectType({
             type: new GraphQLNonNull(GraphQLBoolean)
           }
         },
-        resolve: requiresAuth.createResolver(async (root, args) => {
-          console.log("inside auth mututation");
-          try {
-            const saltRounds = 10;
-            const salt = bcrypt.genSaltSync(saltRounds);
-            const hash = bcrypt.hashSync(args.password, salt);
-
-            await Db.models.employee.create({
-              firstname: args.firstname,
-              lastname: args.lastname,
-              user: args.user.toLowerCase(),
-              password: hash,
-              dni: args.dni,
-              phone: args.phone,
-              active: args.active
-            });
-            console.log("success");
-            return {
-              ok: true
-            }
-          } catch (err) {
-            console.log("err", err);
-            return {
-              ok: false,
-              errors: formatErrors(err)
-            };
+        resolve: (root, args) => {
+          const saltRounds = 10;
+          const salt = bcrypt.genSaltSync(saltRounds);
+          const hash = bcrypt.hashSync(args.password, salt);
+          console.log("hash-employee", hash, args.password);
+          return Db.models.employee.create({
+            firstname: args.firstname,
+            lastname: args.lastname,
+            user: args.user.toLowerCase(),
+            password: hash,
+            dni: args.dni,
+            phone: args.phone,
+            active: args.active
+          });
         }
-        })
-
-        // resolve: (root, args) => {
-        //   const saltRounds = 10;
-        //   const salt = bcrypt.genSaltSync(saltRounds);
-        //   const hash = bcrypt.hashSync(args.password, salt);
-
-        //   return Db.models.employee.create({
-        //     firstname: args.firstname,
-        //     lastname: args.lastname,
-        //     user: args.user.toLowerCase(),
-        //     password: hash,
-        //     dni: args.dni,
-        //     phone: args.phone,
-        //     active: args.active
-        //   });
-        // }
       },
       addBranch: {
         type: Branch,
@@ -293,6 +330,39 @@ const MutationType = new GraphQLObjectType({
             });
         }
       },
+
+      updateAdmin: {
+        type: Admin,
+        args: {
+          id: {
+            type: new GraphQLNonNull(GraphQLID)
+          },
+          username: {
+            type: GraphQLString
+          },
+          password: {
+            type: GraphQLString
+          },
+          email: {
+            type: GraphQLString
+          }
+        },
+        resolve(roots, args) {
+          const saltRounds = 10;
+          const salt = bcrypt.genSaltSync(saltRounds);
+          args.password = bcrypt.hashSync(args.password, salt);
+          return Db.models.admin
+            .findOne({ where: { id: args.id } })
+            .then(result => {
+              return result
+                .update(args, { returning: true })
+                .then(updatedresult => {
+                  return updatedresult;
+                });
+            });
+        }
+      },
+
       updateEmployee: {
         type: Employee,
         args: {
@@ -492,6 +562,26 @@ const MutationType = new GraphQLObjectType({
               Db.models.employee.destroy({
                 where: {
                   user: args.user.toLowerCase()
+                }
+              });
+              return result;
+            });
+        }
+      },
+      deleteAdmin: {
+        type: Admin,
+        args: {
+          id: {
+            type: new GraphQLNonNull(GraphQLID)
+          }
+        },
+        resolve(parent, args) {
+          return Db.models.admin
+            .findOne({ where: { id: args.id } })
+            .then(result => {
+              Db.models.admin.destroy({
+                where: {
+                  id: args.id
                 }
               });
               return result;

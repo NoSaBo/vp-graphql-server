@@ -12,35 +12,35 @@ const AdminModel = {
   username: {
     type: Sequelize.STRING,
     unique: true,
-    validate: {
-      isAlphanumeric: {
-        args: true,
-        msg: "El nombre de usuario solo puede contener letras y números"
-      },
-      len: {
-        args: [4, 11],
-        msg: "El nombre de usuario debe tener entre 5 y 10 caracteres (test)"
-      }
-    }
+    // validate: {
+    //   isAlphanumeric: {
+    //     args: true,
+    //     msg: "El nombre de usuario solo puede contener letras y números"
+    //   },
+    //   len: {
+    //     args: [4, 11],
+    //     msg: "El nombre de usuario debe tener entre 5 y 10 caracteres (test)"
+    //   }
+    // }
   },
   email: {
     type: Sequelize.STRING,
     unique: true,
-    validate: {
-      isEmail: {
-        args: true,
-        msg: "Cuenta de correo inválida"
-      }
-    }
+    // validate: {
+    //   isEmail: {
+    //     args: true,
+    //     msg: "Cuenta de correo inválida"
+    //   }
+    // }
   },
   password: {
     type: Sequelize.STRING,
-    validate: {
-      len: {
-        args: [5, 10],
-        msg: 'La contraseña debe de tener entre 5 y 10 caracteres"'
-      }
-    }
+    // validate: {
+    //   len: {
+    //     args: [5, 10],
+    //     msg: 'La contraseña debe de tener entre 5 y 10 caracteres"'
+    //   }
+    // }
   },
 };
 

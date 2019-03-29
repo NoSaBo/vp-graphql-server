@@ -3,9 +3,10 @@ import _ from "lodash";
 import bcrypt from "bcrypt";
 
 export const createTokens = async (user, secret, secret2) => {
+  console.log("user", user);
   const createToken = jwt.sign(
     {
-      user: _.pick(user, ["id", "username"])
+      user: _.pick(user, ["id", "username", "email", "password"])
     },
     secret,
     {
@@ -65,8 +66,8 @@ export const refreshTokens = async (token, refreshToken, models, SECRET) => {
   };
 };
 
-export const tryLogin = async (email, password, models, SECRET, SECRET2) => {
-  const user = await models.admin.findOne({ where: { email }, raw: true });
+export const tryLogin = async (username, password, models, SECRET, SECRET2) => {
+  const user = await models.admin.findOne({ where: { username }, raw: true });
   if (!user) {
     // user with provided email not found
     return {
