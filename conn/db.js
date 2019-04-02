@@ -36,6 +36,8 @@ const EmployeeXServiceShift = conn.define(
 );
 const Parking = conn.define("parking", ParkingModel);
 
+const Admin = conn.define("admin", AdminModel);
+
 export const models = {};
 models.sequelize = conn;
 models.Sequelize = Sequelize;
