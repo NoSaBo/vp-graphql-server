@@ -41,7 +41,7 @@ const MutationType = new GraphQLObjectType({
   description: "Funtions to create data",
   fields() {
     return {
-      login: {
+      weblogin: {
         type: LoginResponse,
         args: {
           username: {
@@ -55,75 +55,6 @@ const MutationType = new GraphQLObjectType({
           return tryLogin(username, password, Db.models, SECRET, SECRET2);
         }
       },
-      // addRegistry: {
-      //   type: RegisterResponse,
-      //   args: {
-      //     username: {
-      //       type: new GraphQLNonNull(GraphQLString)
-      //     },
-      //     email: {
-      //       type: new GraphQLNonNull(GraphQLString)
-      //     },
-      //     password: {
-      //       type: new GraphQLNonNull(GraphQLString)
-      //     }
-      //   },
-      //   async resolve(root, args) {
-      //     const saltRounds = 10;
-      //     const salt = bcrypt.genSaltSync(saltRounds);
-      //     const hash = bcrypt.hashSync(args.password, salt);
-      //     console.log("hash-admin", hash);
-      //     try {
-      //       const admin = await Db.models.admin.create(args);
-      //       return {
-      //         ok: true,
-      //         admin
-      //       };
-      //     } catch (err) {
-      //       return {
-      //         ok: false,
-      //         errors: formatErrors(err, models)
-      //       };
-      //     }
-      //   }
-      // },
-      // addRegistry: {
-      //   type: RegisterResponse,
-      //   args: {
-      //     username: {
-      //       type: new GraphQLNonNull(GraphQLString)
-      //     },
-      //     email: {
-      //       type: new GraphQLNonNull(GraphQLString)
-      //     },
-      //     password: {
-      //       type: new GraphQLNonNull(GraphQLString)
-      //     }
-      //   },
-      //   resolve: (root, args) => {
-      //     const saltRounds = 10;
-      //     const salt = bcrypt.genSaltSync(saltRounds);
-      //     console.log("password-admin", args.password);
-      //     const hash = bcrypt.hashSync(args.password, salt);
-      //     console.log("hash-admin", hash);
-      //     try {
-      //       const admin = Db.models.admin.create({
-      //         username: args.username,
-      //         email: args.email,
-      //         password: hash
-      //       });
-      //       return {
-      //         ok: true,
-      //         admin
-      //       };
-      //     } catch (err) {
-      //       return {
-      //         ok: false,
-      //         errors: formatErrors(err, models)
-      //       };
-      //     }
-      //   }
-      // },
       addAdmin: {
         type: Admin,
         args: {
@@ -141,11 +72,10 @@ const MutationType = new GraphQLObjectType({
           const saltRounds = 10;
           const salt = bcrypt.genSaltSync(saltRounds);
           const hash = bcrypt.hashSync(args.password, salt);
-          console.log("hash-admin", hash, args.password);
           return Db.models.admin.create({
             username: args.username,
             email: args.email,
-            password: hash,
+            password: hash
           });
         }
       },
@@ -178,7 +108,6 @@ const MutationType = new GraphQLObjectType({
           const saltRounds = 10;
           const salt = bcrypt.genSaltSync(saltRounds);
           const hash = bcrypt.hashSync(args.password, salt);
-          console.log("hash-employee", hash, args.password);
           return Db.models.employee.create({
             firstname: args.firstname,
             lastname: args.lastname,
@@ -331,6 +260,29 @@ const MutationType = new GraphQLObjectType({
         }
       },
 
+      updateSuperadmin: {
+        type: Admin,
+        args: {
+          password: {
+            type: GraphQLString
+          }
+        },
+        resolve(roots, args) {
+          return Db.models.admin
+            .findOne({ where: { username: "superadmin" } })
+            .then(result => {
+              const saltRounds = 10;
+              const salt = bcrypt.genSaltSync(saltRounds);
+              args.password = bcrypt.hashSync(args.password, salt);
+              return result
+                .update(args, { returning: true })
+                .then(updatedresult => {
+                  return updatedresult;
+                });
+            });
+        }
+      },
+
       updateAdmin: {
         type: Admin,
         args: {
@@ -348,21 +300,33 @@ const MutationType = new GraphQLObjectType({
           }
         },
         resolve(roots, args) {
-          const saltRounds = 10;
-          const salt = bcrypt.genSaltSync(saltRounds);
-          args.password = bcrypt.hashSync(args.password, salt);
+          const newPassword = args.password;
           return Db.models.admin
             .findOne({ where: { id: args.id } })
             .then(result => {
-              return result
-                .update(args, { returning: true })
-                .then(updatedresult => {
-                  return updatedresult;
-                });
+              const oldpassword = result.dataValues.password;
+              if (newPassword === oldpassword) {
+                return result
+                  .updateAttributes({
+                    username: args.username,
+                    email: args.email
+                  })
+                  .then(updatedresult => {
+                    return updatedresult;
+                  });
+              } else {
+                const saltRounds = 10;
+                const salt = bcrypt.genSaltSync(saltRounds);
+                args.password = bcrypt.hashSync(args.password, salt);
+                return result
+                  .update(args, { returning: true })
+                  .then(updatedresult => {
+                    return updatedresult;
+                  });
+              }
             });
         }
       },
-
       updateEmployee: {
         type: Employee,
         args: {
@@ -435,7 +399,6 @@ const MutationType = new GraphQLObjectType({
           return Db.models.branch
             .findOne({ where: { id: args.id } })
             .then(result => {
-              console.log("result", result);
               return result
                 .update(args, { returning: true })
                 .then(updatedresult => {

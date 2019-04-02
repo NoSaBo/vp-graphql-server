@@ -1,7 +1,6 @@
 /* @flow */
 
 import { GraphQLObjectType, GraphQLString, GraphQLBoolean, GraphQLList } from "graphql";
-import Admin from './admin';
 import Error from './error';
 
 const LoginResponse = new GraphQLObjectType({

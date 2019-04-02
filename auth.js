@@ -73,7 +73,7 @@ export const tryLogin = async (username, password, models, SECRET, SECRET2) => {
     return {
       ok: false,
       errors: [
-        { path: "email", message: "No existe ningún usuario con tal correo" }
+        { path: "username", message: "No existe ningún administrador con tal usuario" }
       ]
     };
   }

@@ -89,6 +89,20 @@ const QueryType = new GraphQLObjectType({
           return admins
         }
       },
+      superadmin: {
+        type: new GraphQLList(Admin),
+        args: {
+          username: {
+            type: GraphQLString
+          }
+        },
+        resolve(root, args) {
+          const admins = Db.models.admin
+            .findAll({ where: args })
+            .then(result => {return result.filter(n => n.username === "superadmin")});
+          return admins
+        }
+      },
       employeesxserviceshifts: {
         type: new GraphQLList(Employeesxserviceshifts),
         args: {
