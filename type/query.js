@@ -17,6 +17,7 @@ import Branch from "../model/branch";
 import ServiceShift from "../model/service-shift";
 import Employeesxserviceshifts from "../model/employee-x-service-shift";
 import Parking from "../model/parking";
+import Admin from "../model/admin";
 
 import Db from "../conn/db";
 
@@ -72,6 +73,34 @@ const QueryType = new GraphQLObjectType({
         },
         resolve(root, args) {
           return Db.models.employee.findAll({ where: args });
+        }
+      },
+      admins: {
+        type: new GraphQLList(Admin),
+        args: {
+          username: {
+            type: GraphQLString
+          }
+        },
+        resolve(root, args) {
+          const admins = Db.models.admin
+            .findAll({ where: args })
+            .then(result => {return result.filter(n => n.username !== "superadmin")});
+          return admins
+        }
+      },
+      superadmin: {
+        type: new GraphQLList(Admin),
+        args: {
+          username: {
+            type: GraphQLString
+          }
+        },
+        resolve(root, args) {
+          const admins = Db.models.admin
+            .findAll({ where: args })
+            .then(result => {return result.filter(n => n.username === "superadmin")});
+          return admins
         }
       },
       employeesxserviceshifts: {

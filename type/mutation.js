@@ -13,41 +13,70 @@ import {
 } from "graphql";
 import { GraphQLDateTime, GraphQLTime } from "graphql-iso-date";
 import * as bcrypt from "bcrypt";
+import _ from "lodash";
 
 import Employee from "../model/employee";
 import Branch from "../model/branch";
 import ServiceShift from "../model/service-shift";
 import Parking from "../model/parking";
 import EmployeexServiceShifts from "../model/employee-x-service-shift";
+import Admin from "../model/admin";
+import RegisterResponse from "../model/RegisterResponse";
+import LoginResponse from "../model/LoginResponse";
 
 import Db from "../conn/db";
+import { models } from "../conn/db";
+import { tryLogin } from "../auth";
+// import requiresAuth from "../permissions";
+
+const formatErrors = (e, models) => {
+  if (e instanceof models.sequelize.ValidationError) {
+    return e.errors.map(x => _.pick(x, ["path", "message"]));
+  }
+  return [{ path: "name", message: "something went wrong" }];
+};
 
 const MutationType = new GraphQLObjectType({
   name: "MutationType",
   description: "Funtions to create data",
   fields() {
     return {
-      login: {
-        type: Employee,
+      weblogin: {
+        type: LoginResponse,
         args: {
-          user: {
+          username: {
             type: new GraphQLNonNull(GraphQLString)
           },
           password: {
             type: new GraphQLNonNull(GraphQLString)
           }
         },
-        resolve(root, args) {
-          return Db.models.employee
-            .findOne({ where: { user: args.user } })
-            .then(user => {
-              if (
-                user &&
-                bcrypt.compareSync(args.password, user.get().password)
-              )
-                return user;
-              else return null;
-            });
+        resolve(root, { username, password }, { SECRET, SECRET2 }) {
+          return tryLogin(username, password, Db.models, SECRET, SECRET2);
+        }
+      },
+      addAdmin: {
+        type: Admin,
+        args: {
+          username: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          email: {
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          password: {
+            type: new GraphQLNonNull(GraphQLString)
+          }
+        },
+        resolve: (root, args) => {
+          const saltRounds = 10;
+          const salt = bcrypt.genSaltSync(saltRounds);
+          const hash = bcrypt.hashSync(args.password, salt);
+          return Db.models.admin.create({
+            username: args.username,
+            email: args.email,
+            password: hash
+          });
         }
       },
       addEmployee: {
@@ -75,11 +104,10 @@ const MutationType = new GraphQLObjectType({
             type: new GraphQLNonNull(GraphQLBoolean)
           }
         },
-        resolve(root, args) {
+        resolve: (root, args) => {
           const saltRounds = 10;
           const salt = bcrypt.genSaltSync(saltRounds);
           const hash = bcrypt.hashSync(args.password, salt);
-
           return Db.models.employee.create({
             firstname: args.firstname,
             lastname: args.lastname,
@@ -231,6 +259,74 @@ const MutationType = new GraphQLObjectType({
             });
         }
       },
+
+      updateSuperadmin: {
+        type: Admin,
+        args: {
+          password: {
+            type: GraphQLString
+          }
+        },
+        resolve(roots, args) {
+          return Db.models.admin
+            .findOne({ where: { username: "superadmin" } })
+            .then(result => {
+              const saltRounds = 10;
+              const salt = bcrypt.genSaltSync(saltRounds);
+              args.password = bcrypt.hashSync(args.password, salt);
+              return result
+                .update(args, { returning: true })
+                .then(updatedresult => {
+                  return updatedresult;
+                });
+            });
+        }
+      },
+
+      updateAdmin: {
+        type: Admin,
+        args: {
+          id: {
+            type: new GraphQLNonNull(GraphQLID)
+          },
+          username: {
+            type: GraphQLString
+          },
+          password: {
+            type: GraphQLString
+          },
+          email: {
+            type: GraphQLString
+          }
+        },
+        resolve(roots, args) {
+          const newPassword = args.password;
+          return Db.models.admin
+            .findOne({ where: { id: args.id } })
+            .then(result => {
+              const oldpassword = result.dataValues.password;
+              if (newPassword === oldpassword) {
+                return result
+                  .updateAttributes({
+                    username: args.username,
+                    email: args.email
+                  })
+                  .then(updatedresult => {
+                    return updatedresult;
+                  });
+              } else {
+                const saltRounds = 10;
+                const salt = bcrypt.genSaltSync(saltRounds);
+                args.password = bcrypt.hashSync(args.password, salt);
+                return result
+                  .update(args, { returning: true })
+                  .then(updatedresult => {
+                    return updatedresult;
+                  });
+              }
+            });
+        }
+      },
       updateEmployee: {
         type: Employee,
         args: {
@@ -303,7 +399,6 @@ const MutationType = new GraphQLObjectType({
           return Db.models.branch
             .findOne({ where: { id: args.id } })
             .then(result => {
-              console.log("result", result);
               return result
                 .update(args, { returning: true })
                 .then(updatedresult => {
@@ -430,6 +525,26 @@ const MutationType = new GraphQLObjectType({
               Db.models.employee.destroy({
                 where: {
                   user: args.user.toLowerCase()
+                }
+              });
+              return result;
+            });
+        }
+      },
+      deleteAdmin: {
+        type: Admin,
+        args: {
+          id: {
+            type: new GraphQLNonNull(GraphQLID)
+          }
+        },
+        resolve(parent, args) {
+          return Db.models.admin
+            .findOne({ where: { id: args.id } })
+            .then(result => {
+              Db.models.admin.destroy({
+                where: {
+                  id: args.id
                 }
               });
               return result;

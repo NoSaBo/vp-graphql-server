@@ -8,6 +8,7 @@ import BranchModel from "./branch";
 import ServiceShiftModel from "./service-shift";
 import EmployeeXServiceShiftModel from "./employee-x-service-shift";
 import ParkingModel from "./parking";
+import AdminModel from "./admin";
 import { dirname } from "path";
 
 require("dotenv").config();
@@ -34,6 +35,12 @@ const EmployeeXServiceShift = conn.define(
   EmployeeXServiceShiftModel
 );
 const Parking = conn.define("parking", ParkingModel);
+
+const Admin = conn.define("admin", AdminModel);
+
+export const models = {};
+models.sequelize = conn;
+models.Sequelize = Sequelize;
 
 // Relationships
 Branch.hasMany(ServiceShift);
