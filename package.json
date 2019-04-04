@@ -9,7 +9,7 @@
   "scripts": {
     "start": "nodemon server.js --exec babel-node",
     "build-base": "babel lib -d dist",
-    "build": "npm start",
+    "build": "",
     "dev:server": "nodemon server.js"
   },
   "repository": {
