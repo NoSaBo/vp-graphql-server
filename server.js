@@ -7,9 +7,6 @@ import cors from "cors";
 require("dotenv").config();
 // import permissions from "./permissions";
 
-// const SECRET = "234l90fasdf23e";
-// const SECRET2 = "234l90fasdf23elkj34jl34";
-
 const SECRET = process.env.SECRET;
 const SECRET2 = process.env.SECRET2;
 
@@ -20,17 +17,6 @@ const app = express();
 app.use(cors());
 
 // app.use(permissions);
-
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Credentials", true);
-  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin,X-Requested-With,Content-Type,Accept,content-type,application/json"
-  );
-  next();
-});
 
 app.use(
   "/graphql",
