@@ -52,6 +52,7 @@ const MutationType = new GraphQLObjectType({
           }
         },
         resolve(root, { username, password }, { SECRET, SECRET2 }) {
+          console.log("weblogin");
           return tryLogin(username, password, Db.models, SECRET, SECRET2);
         }
       },

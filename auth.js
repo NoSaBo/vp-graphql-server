@@ -67,13 +67,17 @@ export const refreshTokens = async (token, refreshToken, models, SECRET) => {
 };
 
 export const tryLogin = async (username, password, models, SECRET, SECRET2) => {
+  console.log("tryLogin");
   const user = await models.admin.findOne({ where: { username }, raw: true });
   if (!user) {
     // user with provided email not found
     return {
       ok: false,
       errors: [
-        { path: "username", message: "No existe ningún administrador con tal usuario" }
+        {
+          path: "username",
+          message: "No existe ningún administrador con tal usuario"
+        }
       ]
     };
   }
