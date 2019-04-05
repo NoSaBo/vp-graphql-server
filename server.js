@@ -36,4 +36,5 @@ app.use(
 
 app.listen(port, () => {
   console.log("Server running on port: 4000");
+  console.log("secrets", SECRET, SECRET2);
 });
