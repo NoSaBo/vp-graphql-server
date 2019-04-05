@@ -45,10 +45,8 @@ app.use(
 );
 
 app.listen(port, () => {
-  console.log("Server running on port: 4000");
-  console.log("ENV.SECRET:", process.env.SECRET);
-  console.log("ENV.SECRET2:", process.env.SECRET2);
+  console.log(`Server running on port: ${port}`);
   console.log("SECRET:", SECRET);
   console.log("SECRET2:", SECRET2);
-  console.log("ENV.PORT", process.env.PORT);
+  console.log("PORT", port);
 });
