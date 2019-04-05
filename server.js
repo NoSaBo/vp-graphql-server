@@ -4,6 +4,7 @@ import express from "express";
 import expressGraphQL from "express-graphql";
 import schema from "./schema";
 import cors from "cors";
+require("dotenv").config();
 // import permissions from "./permissions";
 
 // const SECRET = "234l90fasdf23e";
@@ -36,5 +37,4 @@ app.use(
 
 app.listen(port, () => {
   console.log("Server running on port: 4000");
-  console.log("secrets", SECRET, SECRET2);
 });
