@@ -39,11 +39,11 @@
     "nodemon": "^1.18.3",
     "pg": "^7.5.0",
     "pg-hstore": "^2.3.2",
-    "sequelize": "^4.39.0"
+    "sequelize": "^4.39.0",
+    "babel-loader": "^8.0.4",
+    "babel-register": "^6.26.0"
   },
   "devDependencies": {
-    "babel-loader": "^8.0.4",
-    "babel-register": "^6.26.0",
     "flow": "^0.2.3",
     "flow-bin": "^0.83.0"
   }
