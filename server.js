@@ -37,6 +37,8 @@ app.use(
 
 app.listen(port, () => {
   console.log("Server running on port: 4000");
+  console.log("SECRET:", process.env.SECRET);
+  console.log("SECRET2:", process.env.SECRET2);
   console.log("SECRET:", SECRET);
   console.log("SECRET2:", SECRET2);
 });
