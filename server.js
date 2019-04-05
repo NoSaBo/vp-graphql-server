@@ -9,17 +9,17 @@ import cors from "cors";
 const SECRET = "234l90fasdf23e";
 const SECRET2 = "234l90fasdf23elkj34jl34";
 
-
 const port = process.env.PORT || 4000;
 
 const app = express();
 
-app.use(cors());
+// app.use(cors());
 
 // app.use(permissions);
 
 app.use(
   "/graphql",
+  cors(),
   expressGraphQL(req => ({
     schema: schema,
     pretty: true,
@@ -29,7 +29,7 @@ app.use(
       SECRET2,
       user: req
     }
-  })),
+  }))
 );
 
 app.listen(port, () => {
