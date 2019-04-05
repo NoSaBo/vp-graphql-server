@@ -6,23 +6,17 @@ import schema from "./schema";
 import cors from "cors";
 // import permissions from "./permissions";
 
-const SECRET = "234l90fasdf23e";
-const SECRET2 = "234l90fasdf23elkj34jl34";
+// const SECRET = "234l90fasdf23e";
+// const SECRET2 = "234l90fasdf23elkj34jl34";
+
+const SECRET = process.env.SECRET;
+const SECRET2 = process.env.SECRET2;
 
 const port = process.env.PORT || 4000;
 
 const app = express();
 
 app.use(cors());
-
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
 
 // app.use(permissions);
 
