@@ -13,22 +13,17 @@ const port = process.env.PORT || 4000;
 
 const app = express();
 
-app.use(cors());
+// app.use(cors());
 
 // app.use(permissions);
 
-app.use("/graphql", function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, Content-Length, X-Requested-With"
-  );
-  if (req.method === "OPTIONS") {
-    res.sendStatus(200);
-  } else {
-    next();
-  }
-});
+app.use(
+  cors({
+    origin: "*",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+    optionsSuccessStatus: 200 /* some legacy browsers (IE11, various SmartTVs) choke on 204 */
+  })
+);
 
 app.use(
   "/graphql",
