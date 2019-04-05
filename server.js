@@ -13,17 +13,9 @@ const port = process.env.PORT || 4000;
 
 const app = express();
 
-// app.use(cors());
+app.use(cors());
 
 // app.use(permissions);
-
-app.use(
-  cors({
-    origin: "*",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
-    optionsSuccessStatus: 200 /* some legacy browsers (IE11, various SmartTVs) choke on 204 */
-  })
-);
 
 app.use(
   "/graphql",
