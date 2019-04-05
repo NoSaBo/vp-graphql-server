@@ -8,8 +8,7 @@
   },
   "scripts": {
     "start": "nodemon server.js --exec babel-node",
-    "build-base": "babel lib -d dist",
-    "build": "echo 'There's no script implemented yet for build'",
+    "build": "",
     "dev:server": "nodemon server.js"
   },
   "repository": {
